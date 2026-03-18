@@ -27,14 +27,14 @@
         "groups": [
           {
             "group": "Getting started",
-            "pages": ["index", "connect"]
+            "pages": ["index", "mcp"]
           },
           {
             "group": "Integrations",
             "pages": [
               "integrations/overview",
               {
-                "group": "Monitoring & Observability",
+                "group": "Monitoring and Observability",
                 "pages": [
                   "integrations/datadog",
                   "integrations/grafana-cloud",
@@ -42,7 +42,7 @@
                 ]
               },
               {
-                "group": "Cloud & Infrastructure",
+                "group": "Cloud and Infrastructure",
                 "pages": [
                   "integrations/cloudwatch",
                   "integrations/gcp"
