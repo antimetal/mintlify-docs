@@ -1,0 +1,104 @@
+---
+title: "Security and compliance"
+description: "How Antimetal handles security, privacy, and access"
+---
+
+Antimetal operates on your production infrastructure. This page covers how we handle security, privacy, and data access.
+
+## Security
+
+<AccordionGroup>
+
+<Accordion title="Encryption and transmission">
+All data is encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Credentials are stored using AWS KMS. Infrastructure is hosted on AWS and provisioned via Infrastructure-as-Code with least-privilege IAM roles. Access to production systems is controlled, logged, and protected with MFA.
+</Accordion>
+
+<Accordion title="Internal practices">
+- Background checks are conducted for all employees
+- Employees receive regular security training
+- Endpoint protection and device management enforced via MDM
+- Regular penetration testing and third-party audits
+- Customer data is never entered into external AI tools by employees
+</Accordion>
+
+<Accordion title="SOC 2 Type II">
+Antimetal is SOC 2 Type II certified. Our controls and procedures have been independently audited and validated to meet industry standards for security, availability, and confidentiality.
+
+Contact [security@antimetal.com](mailto:security@antimetal.com) for a copy of the report.
+</Accordion>
+
+<Accordion title="Vulnerability disclosure">
+Report security concerns to [security@antimetal.com](mailto:security@antimetal.com).
+</Accordion>
+
+</AccordionGroup>
+
+## Privacy and data
+
+<AccordionGroup>
+
+<Accordion title="Data isolation">
+All tenant data runs in isolated environments with strict separation boundaries. There is no cross-contamination between customers. Lightweight metadata such as alert identifiers and investigation status may be temporarily retained for tracking purposes.
+</Accordion>
+
+<Accordion title="AI providers and model usage">
+Antimetal uses third-party AI APIs from Anthropic, OpenAI, and Google. All providers are configured with no-data-retention policies. Customer data is never used to train shared or generalized models. Each customer's data is handled in a segregated environment with multi-tenant isolation controls.
+</Accordion>
+
+<Accordion title="AI in the product">
+AI accelerates root cause analysis and generates remediation recommendations tied to evidence. All AI outputs are linked to underlying data so customers can validate results independently. Audit logs capture all AI-assisted activity. AI augments investigation quality but never operates outside customer visibility.
+</Accordion>
+
+</AccordionGroup>
+
+## Integration permissions
+
+Each integration requests only the minimum permissions needed. See the individual integration pages for details on specific scopes and access levels.
+
+<CardGroup cols={2}>
+<Card title="Slack" icon="slack" href="/integrations/slack">
+  Minimal OAuth scopes, no message persistence
+</Card>
+<Card title="GitHub" icon="github" href="/integrations/github">
+  Repository access, pull requests, CI/CD monitoring
+</Card>
+<Card title="CloudWatch" icon="cloud" href="/integrations/cloudwatch">
+  Read-only IAM Role via CloudFormation
+</Card>
+<Card title="GCP" icon="google" href="/integrations/gcp">
+  Read-only service account across projects
+</Card>
+<Card title="Datadog" icon="chart-mixed" href="/integrations/datadog">
+  Read-only API and Application keys
+</Card>
+<Card title="Grafana Cloud" icon="chart-line" href="/integrations/grafana-cloud">
+  Read-only access policy token
+</Card>
+<Card title="Sentry" icon="bug" href="/integrations/sentry">
+  Read-only internal integration token
+</Card>
+<Card title="PagerDuty" icon="pager" href="/integrations/pagerduty">
+  Read-only User API Token
+</Card>
+<Card title="Incident.io" icon="bell" href="/integrations/incident-io">
+  Read-only API key
+</Card>
+</CardGroup>
+
+## Best practices
+
+<AccordionGroup>
+
+<Accordion title="Review AI outputs">
+Antimetal surfaces recommendations tied to evidence. Review them before acting. All recommendations include links to the underlying data so you can verify independently.
+</Accordion>
+
+<Accordion title="Manage credentials securely">
+Use the [Antimetal dashboard](https://overlook.antimetal.com) to store integration credentials. Do not share API keys over Slack or email.
+</Accordion>
+
+<Accordion title="Use least-privilege access">
+When possible, scope integration permissions to specific projects, repositories, or environments. Each integration page documents the minimum required permissions.
+</Accordion>
+
+</AccordionGroup>

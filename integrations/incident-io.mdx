@@ -1,0 +1,59 @@
+---
+title: "Incident.io"
+description: "Create an API key in Incident.io for Antimetal"
+---
+
+## Overview
+
+This guide walks you through creating an API key in Incident.io to enable the Antimetal integration.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/incident-io">
+  Go to the Incident.io integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- An Incident.io account with a Team subscription
+- Permission to generate API keys
+
+## Setup
+
+<Steps>
+
+<Step title="Go to API Key Settings">
+  Navigate to **Settings > API Keys**.
+</Step>
+
+<Step title="Add a new API key">
+  Click **Add New** and name the key `Antimetal`.
+</Step>
+
+<Step title="Select permissions">
+  Enable the following permissions:
+
+  - View data, like public incidents and organisation settings
+  - View all incident data, including private incidents
+  - View catalog types and entries
+  - View all incident data, including private incidents, and manage incident memberships
+  - Read schedules
+</Step>
+
+<Step title="Create the key">
+  Click **Create**. On the next page, copy the API key.
+
+  <Warning>This will only be shown once. Save it securely.</Warning>
+</Step>
+
+<Step title="Share the key with Antimetal">
+  Paste the token in the Antimetal UI.
+</Step>
+
+</Steps>
+
+## Permissions and access
+
+Antimetal uses a read-only API key scoped to incidents, catalog entries, schedules, and organization data.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />

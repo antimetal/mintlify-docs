@@ -4,65 +4,52 @@
   "name": "Antimetal Docs",
   "colors": {
     "primary": "#000000",
-    "light": "#ffffff",
+    "light": "#DBEF01",
     "dark": "#000000"
+  },
+  "fonts": {
+    "heading": {
+      "family": "Ivar Text",
+      "source": "/fonts/IvarText-Regular.woff2",
+      "format": "woff2"
+    },
+    "body": {
+      "family": "ABC Diatype Plus Variable",
+      "source": "/fonts/ABCDiatypePlusVariable-fixed.woff2",
+      "format": "woff2"
+    }
   },
   "favicon": "/favicon.png",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
             "group": "Getting started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "index"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Integrations",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "integrations/overview",
+              "integrations/slack",
+              "integrations/github",
+              "integrations/cloudwatch",
+              "integrations/gcp",
+              "integrations/datadog",
+              "integrations/grafana-cloud",
+              "integrations/sentry",
+              "integrations/pagerduty",
+              "integrations/incident-io"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Admin",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API reference",
-        "groups": [
-          {
-            "group": "API documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "admin/security"
             ]
           }
         ]
@@ -71,13 +58,8 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://antimetal.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
           "anchor": "Blog",
-          "href": "https://antimetal.com/blog",
+          "href": "https://antimetal.com/resources/blog",
           "icon": "newspaper"
         }
       ]

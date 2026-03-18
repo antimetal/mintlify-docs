@@ -1,0 +1,45 @@
+---
+title: "PagerDuty"
+description: "Connect PagerDuty to Antimetal"
+---
+
+## Overview
+
+This guide walks you through connecting PagerDuty to Antimetal using a User API Token.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/pagerduty">
+  Go to the PagerDuty integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- A PagerDuty account
+- Permission to generate User API Tokens
+
+## Setup
+
+<Steps>
+
+<Step title="Navigate to User Settings">
+  In PagerDuty, click your user profile icon, then select **My Profile** and **User Settings**.
+</Step>
+
+<Step title="Create an API User Token">
+  In the **API Access** section, click **Create API User Token** and follow the prompts.
+
+  <Warning>Copy the token and store it securely. It will only be shown once.</Warning>
+</Step>
+
+<Step title="Share the token with Antimetal">
+  Paste the token in the Antimetal UI.
+</Step>
+
+</Steps>
+
+## Permissions and access
+
+Antimetal connects to PagerDuty with read-only access. No write operations are performed in your PagerDuty environment. Antimetal reads incidents, services, schedules, on-call data, and log entries to support investigation and root cause analysis.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />

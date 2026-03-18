@@ -1,0 +1,69 @@
+---
+title: "CloudWatch"
+description: "Set up an IAM Role with CloudWatch access for Antimetal"
+---
+
+## Overview
+
+This guide walks you through setting up an IAM Role with CloudWatch access to enable the Antimetal integration.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/cloudwatch">
+  Go to the CloudWatch integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- An AWS account
+- A user account with permissions to create cross-account IAM Roles
+
+## Setup
+
+<Steps>
+
+<Step title="Open the CloudFormation quick create link">
+  Navigate to the following link in your AWS account: [Launch Antimetal CloudFormation Stack](https://console.aws.amazon.com/cloudformation)
+</Step>
+
+<Step title="Provide the External ID">
+  Enter the External ID shown in the Antimetal UI (or provided by the Antimetal team).
+</Step>
+
+<Step title="(Optional) Exclude specific log groups">
+  To prevent Antimetal from accessing certain log groups, paste comma-separated log group ARNs in the **ExcludedLogGroups** field.
+
+  You can find ARNs in **CloudWatch Console > Log groups > [select group] > Copy ARN**.
+</Step>
+
+<Step title="Acknowledge IAM resource creation">
+  Scroll to the bottom and check the box confirming that the stack may create IAM resources.
+</Step>
+
+<Step title="Create the stack">
+  Click **Create stack** and wait until the status shows `CREATE_COMPLETE`.
+</Step>
+
+<Step title="Find the IAM Role">
+  In the stack's outputs, click on **AntimetalReadOnlyRole**. This will open the role in the IAM console.
+</Step>
+
+<Step title="Copy the Role ARN">
+  On the IAM Role page, copy the **Role ARN**.
+</Step>
+
+<Step title="Share the Role ARN with Antimetal">
+  Paste the Role ARN into the Antimetal UI where requested.
+</Step>
+
+</Steps>
+
+## Resources
+
+- [Video walkthrough](https://www.loom.com)
+
+## Permissions and access
+
+Antimetal uses a read-only cross-account IAM Role provisioned via CloudFormation. No write operations are performed in your AWS environment.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />

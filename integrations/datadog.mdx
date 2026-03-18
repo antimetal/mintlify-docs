@@ -1,0 +1,73 @@
+---
+title: "Datadog"
+description: "Generate API and application keys in Datadog for Antimetal"
+---
+
+## Overview
+
+This guide walks you through generating the necessary API and application keys in Datadog to enable the Antimetal integration.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/datadog">
+  Go to the Datadog integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- A Datadog account with permissions to generate API keys
+- Access to Organization Settings in Datadog
+
+## Setup
+
+<Steps>
+
+<Step title="Navigate to Organization Settings">
+  Go to [Datadog](https://app.datadoghq.com), click on your user icon (bottom left), and select **Organization Settings**.
+</Step>
+
+<Step title="Create an API key">
+  Click **API Keys** in the left sidebar, then select **New Key**. Name it `Antimetal`.
+
+  <Warning>Save the secret API key securely — it won't be shown again.</Warning>
+</Step>
+
+<Step title="Create an Application key">
+  Click **Application Keys** in the left sidebar, then click **New Key**. Name it `Antimetal`.
+</Step>
+
+<Step title="(Optional) Edit app key scopes">
+  By default, the app key inherits the owner's permissions. To limit access, click **Edit Scopes** and grant read access to:
+
+  - APM
+  - Case and Incident Management
+  - Compliance
+  - Dashboards
+  - Error Tracking
+  - Events
+  - Log Management
+  - Metrics
+  - Monitors
+  - Service Level Objectives
+  - Synthetics
+
+  See the [full list of permissions](https://docs.datadoghq.com/account_management/rbac/permissions/).
+</Step>
+
+<Step title="Share the keys with Antimetal">
+  Paste the keys and select your region in the Antimetal UI.
+
+  <Tip>You can find your region by looking at your Datadog URL (e.g., `app.datadoghq.eu` for EU).</Tip>
+</Step>
+
+</Steps>
+
+## Resources
+
+- [Video walkthrough](https://www.loom.com/share/49f8c7ceb68e461db82d26f8bc21e40a?sid=0e1374cc-1e36-46b2-b9f1-ac5883412545)
+
+## Permissions and access
+
+Antimetal uses read-only API and Application keys. No write operations are performed in your Datadog environment. Required scopes: APM, Metrics, Logs, Events, Monitors, Case & Incident Management.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />

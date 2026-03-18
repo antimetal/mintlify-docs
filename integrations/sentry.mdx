@@ -1,0 +1,60 @@
+---
+title: "Sentry"
+description: "Set up an internal integration in Sentry for Antimetal"
+---
+
+## Overview
+
+This guide walks you through setting up an internal integration in Sentry to enable the Antimetal integration.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/sentry">
+  Go to the Sentry integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- A Sentry account with access to your organization's Settings
+- Permission to create Internal Integrations
+
+## Setup
+
+<Steps>
+
+<Step title="Navigate to Internal Integrations">
+  Log in to [Sentry](https://sentry.io), click **Settings** in the navigation bar. Under **Integrations**, click **Create New Integration**, select **Internal Integration**, and click **Next**.
+</Step>
+
+<Step title="Create the integration">
+  Name it `Antimetal` and grant read access to the following scopes:
+
+  - `project:read`
+  - `team:read`
+  - `issue & event:read`
+  - `organization:read`
+  - `member:read`
+  - `alerts:read`
+
+  Click **Save Changes**.
+</Step>
+
+<Step title="Create an integration token">
+  On the **Edit Internal Integration** page, scroll down to the authentication token section and click **Create New Token**.
+
+  <Warning>Save the token securely — it won't be shown again.</Warning>
+</Step>
+
+<Step title="Share the token with Antimetal">
+  Paste the token and your organization slug in the Antimetal UI.
+
+  <Tip>You can find your organization slug in your general organization settings.</Tip>
+</Step>
+
+</Steps>
+
+## Permissions and access
+
+Antimetal uses a read-only internal integration token scoped to projects, teams, issues, events, organization info, members, and alerts.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />

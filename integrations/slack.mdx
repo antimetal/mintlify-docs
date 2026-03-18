@@ -1,0 +1,65 @@
+---
+title: "Slack"
+description: "Install the Antimetal Slackbot in your workspace"
+---
+
+## Overview
+
+The Antimetal Slackbot lives in your Slack channels and investigates alerts in real time, surfacing root causes and remediation steps.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/slack">
+  Go to the Slack integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- A Slack workspace where you have permission to install apps
+- At least one alert channel (e.g., `#alerts`, `#oncall`) where Antimetal should operate
+
+## Setup
+
+<Steps>
+
+<Step title="Install the Slackbot">
+  From the Antimetal dashboard, click **Connect Slack**. This redirects you to Slack to authorize the app in your workspace.
+</Step>
+
+<Step title="Add to alert channels">
+  Invite the Antimetal bot to the channels where your alerts land. You can do this by mentioning `@Antimetal` in each channel or by using Slack's channel settings.
+</Step>
+
+<Step title="Verify">
+  Trigger or replay a recent alert in one of your channels to confirm the bot is responding.
+</Step>
+
+</Steps>
+
+## Permissions and access
+
+The Antimetal Slackbot requests the following scopes:
+
+| Scope | Purpose |
+|---|---|
+| `app_mentions:read` | Respond when mentioned in channels |
+| `channels:history` | Read alert messages in public channels |
+| `channels:join` | Join public channels when invited |
+| `channels:read` | List available channels |
+| `chat:write` | Post investigation results and remediation steps |
+| `files:read` | Read files shared in conversations |
+| `groups:history` | Read messages in private channels the bot is in |
+| `groups:read` | List private channels the bot is invited to |
+| `groups:write` | Manage private channels the bot is in |
+| `im:history` | Read direct messages with the bot |
+| `im:read` | View direct message conversations |
+| `reactions:read` | Read message reactions |
+| `reactions:write` | Add reactions to messages |
+| `usergroups:read` | View user groups |
+| `users:read` | View user profiles |
+| `users:read.email` | View user email addresses |
+
+- No access to DMs unless the bot is explicitly invited
+- Slack message content is not persisted. Lightweight metadata (alert identifiers, investigation status) may be temporarily retained for tracking.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />

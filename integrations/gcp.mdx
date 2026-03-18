@@ -1,0 +1,117 @@
+---
+title: "GCP"
+description: "Create a GCP service account for Antimetal monitoring"
+---
+
+## Overview
+
+This guide walks you through creating a GCP service account to enable the Antimetal integration for monitoring traces, logs, and metrics across your GCP projects.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/gcp">
+  Go to the GCP integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- A GCP account with permissions to create service accounts
+- Access to IAM & Admin settings
+- Admin access to the projects you want to monitor
+
+## Setup
+
+<Tabs>
+<Tab title="GCP Console">
+
+<Steps>
+
+<Step title="Create the service account">
+  1. Go to [Google Cloud Console](https://console.cloud.google.com)
+  2. Navigate to the project where you do your monitoring/observability work
+  3. Go to **IAM & Admin > Service Accounts**
+  4. Click **+ CREATE SERVICE ACCOUNT**
+  5. Fill in the details:
+     - **Name:** `antimetal-monitoring`
+     - **ID:** `antimetal-monitoring`
+     - **Description:** `Service account for Antimetal monitoring integration`
+  6. Click **CREATE AND CONTINUE**
+  7. Copy the created service account email address
+</Step>
+
+<Step title="Grant permissions to each project">
+  For each project you want to monitor (including the one where you created the service account):
+
+  1. Navigate to the target project
+  2. Go to **IAM & Admin > IAM**
+  3. Click **+ GRANT ACCESS**
+  4. In **New principals**, enter the service account email:
+     ```
+     antimetal-monitoring@[YOUR-PROJECT-ID].iam.gserviceaccount.com
+     ```
+  5. Assign these roles:
+     - `Monitoring Viewer` (roles/monitoring.viewer)
+     - `Logs Viewer` (roles/logging.viewer)
+     - `Cloud Trace User` (roles/cloudtrace.user)
+     - `Error Reporting Viewer` (roles/errorreporting.viewer)
+     - `Cloud Asset Viewer` (roles/cloudasset.viewer)
+  6. Click **Save**
+  7. Repeat for all projects you want to monitor
+</Step>
+
+<Step title="Generate the JSON key">
+  1. Go to **IAM & Admin > Service Accounts**
+  2. Click on your `antimetal-monitoring` service account
+  3. Go to the **Keys** tab
+  4. Click **ADD KEY > Create new key** with JSON format
+</Step>
+
+</Steps>
+
+</Tab>
+<Tab title="Terraform / IaC">
+
+<Steps>
+
+<Step title="Create service account and permissions">
+  Create the service account in your monitoring/observability project and add IAM bindings for each project you want to monitor, granting these roles:
+
+  - `roles/cloudasset.viewer`
+  - `roles/errorreporting.viewer`
+  - `roles/monitoring.viewer`
+  - `roles/logging.viewer`
+  - `roles/cloudtrace.user`
+</Step>
+
+<Step title="Generate JSON key">
+  Create a JSON key for the service account. This can be done through IaC output or manually through the console.
+</Step>
+
+</Steps>
+
+</Tab>
+</Tabs>
+
+### Configure the Antimetal integration
+
+1. Navigate to the Antimetal GCP integration page
+2. Upload or paste the contents of the downloaded JSON key file
+3. Specify the project IDs you granted permissions to
+
+### Required permissions summary
+
+The service account will have these read-only permissions across your specified projects:
+
+| Role | Access |
+|------|--------|
+| Monitoring Viewer | Read access to metrics and monitoring data |
+| Logs Viewer | Read access to Cloud Logging data |
+| Cloud Trace User | Read access to distributed tracing data |
+| Error Reporting Viewer | Read access to error groups and events |
+| Cloud Asset Viewer | Read access to cloud resource metadata and configurations |
+
+## Permissions and access
+
+Antimetal uses a read-only service account with Monitoring Viewer, Logs Viewer, Cloud Trace User, Error Reporting Viewer, and Cloud Asset Viewer roles. No write operations are performed.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />

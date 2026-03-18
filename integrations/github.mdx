@@ -1,0 +1,55 @@
+---
+title: "GitHub"
+description: "Connect your GitHub repositories to Antimetal"
+---
+
+## Overview
+
+This guide walks you through connecting your GitHub repositories to enable the Antimetal integration.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/github">
+  Go to the GitHub integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- A GitHub account with admin access to the repositories you want to connect
+- Permission to install GitHub Apps in your organization
+
+## Setup
+
+<Steps>
+
+<Step title="Install the Antimetal GitHub App">
+  Navigate to the Antimetal UI and click **Connect GitHub**. This will redirect you to GitHub to install the Antimetal app.
+</Step>
+
+<Step title="Select repositories">
+  Choose whether to grant access to all repositories or select specific ones.
+</Step>
+
+<Step title="Authorize the app">
+  Review the requested permissions and click **Install & Authorize**.
+</Step>
+
+<Step title="Confirm in Antimetal">
+  You'll be redirected back to the Antimetal UI. Verify that your repositories appear in the integrations page.
+</Step>
+
+</Steps>
+
+## Permissions and access
+
+The Antimetal GitHub App requests the following permissions:
+
+| Permission | Access |
+|---|---|
+| GitHub Actions | Read-only |
+| Commit Statuses | Read-only |
+| Contents | Read and write |
+| Metadata | Read-only |
+| Pull Requests | Read and write |
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />

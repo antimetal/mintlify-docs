@@ -1,0 +1,64 @@
+---
+title: "Grafana Cloud"
+description: "Retrieve your Grafana Cloud credentials for Antimetal"
+---
+
+## Overview
+
+This guide walks you through retrieving the necessary URL, username, and access policy token from Grafana Cloud to enable the Antimetal integration.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/grafana-cloud">
+  Go to the Grafana Cloud integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- A Grafana Cloud account with access to Loki, Tempo, or Prometheus
+- Permissions to view data sources and create access policies
+
+## Setup
+
+<Steps>
+
+<Step title="Open the Grafana Cloud Portal">
+  Go to [grafana.com/profile/org](https://grafana.com/profile/org) and select your organization.
+</Step>
+
+<Step title="Access the data source instance">
+  From the left sidebar, go to **Connections > Data Sources** and click on your Loki, Tempo, or Prometheus instance.
+</Step>
+
+<Step title="Copy your URL and username">
+  - Copy the **URL** under Connection (e.g., `https://logs-prod-036.grafana.net`)
+  - Copy the **User** under Authentication (a numeric ID, e.g., `1264142`)
+</Step>
+
+<Step title="Create an access policy token">
+  1. Scroll down to the **Access Policies** section
+  2. Click **Create Access Policy**
+  3. Enter a name (e.g., `Antimetal`)
+  4. Under Permissions, enable all read permissions
+  5. Click **Create Token**
+
+  <Warning>Copy the token — it is shown only once.</Warning>
+</Step>
+
+<Step title="Submit credentials to Antimetal">
+  Provide the following in the Antimetal UI:
+
+  | Field | Value |
+  |-------|-------|
+  | **URL** | The full URL you copied |
+  | **Username** | The numeric user ID |
+  | **Password** | The access policy token |
+</Step>
+
+</Steps>
+
+## Permissions and access
+
+Antimetal uses a read-only access policy token for your Loki, Tempo, and Prometheus instances. No write operations are performed.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />
