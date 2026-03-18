@@ -1,0 +1,129 @@
+---
+title: "Connect to Antimetal"
+description: "Add Antimetal to your AI tools"
+---
+
+Connect Antimetal to your editor or AI assistant to bring investigation, root cause analysis, and remediation into your workflow.
+
+<Note>
+Before connecting, make sure you've [set up your integrations](/integrations/overview) so Antimetal has access to your infrastructure and observability data.
+</Note>
+
+You'll need an API key from the [Antimetal dashboard](https://overlook.antimetal.com).
+
+<Tabs>
+
+<Tab title="Claude Code">
+
+```bash
+claude mcp add antimetal --transport http https://mcp.antimetal.com -- --header "Authorization: Bearer $ANTIMETAL_API_KEY"
+```
+
+</Tab>
+
+<Tab title="Cursor">
+
+Add the following to your Cursor MCP settings (`.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "antimetal": {
+      "type": "http",
+      "url": "https://mcp.antimetal.com",
+      "headers": {
+        "Authorization": "Bearer ${ANTIMETAL_API_KEY}"
+      }
+    }
+  }
+}
+```
+
+</Tab>
+
+<Tab title="VS Code">
+
+Add the following to your VS Code settings (`settings.json`):
+
+```json
+{
+  "mcp": {
+    "inputs": [
+      {
+        "type": "promptString",
+        "id": "antimetal-api-key",
+        "description": "Antimetal API Key",
+        "password": true
+      }
+    ],
+    "servers": {
+      "antimetal": {
+        "type": "http",
+        "url": "https://mcp.antimetal.com",
+        "headers": {
+          "Authorization": "Bearer ${input:antimetal-api-key}"
+        }
+      }
+    }
+  }
+}
+```
+
+</Tab>
+
+<Tab title="Claude Desktop">
+
+Add the following to your Claude Desktop config:
+
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "antimetal": {
+      "type": "http",
+      "url": "https://mcp.antimetal.com",
+      "headers": {
+        "Authorization": "Bearer YOUR_ANTIMETAL_API_KEY"
+      }
+    }
+  }
+}
+```
+
+Replace `YOUR_ANTIMETAL_API_KEY` with your actual API key.
+
+</Tab>
+
+<Tab title="Windsurf">
+
+Add the following to your Windsurf MCP config (`~/.codeium/windsurf/mcp_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "antimetal": {
+      "type": "http",
+      "url": "https://mcp.antimetal.com",
+      "headers": {
+        "Authorization": "Bearer YOUR_ANTIMETAL_API_KEY"
+      }
+    }
+  }
+}
+```
+
+</Tab>
+
+<Tab title="Codex">
+
+```bash
+codex mcp add antimetal --transport http https://mcp.antimetal.com -- --header "Authorization: Bearer $ANTIMETAL_API_KEY"
+```
+
+</Tab>
+
+</Tabs>
+
+<Snippet file="need-help.mdx" />

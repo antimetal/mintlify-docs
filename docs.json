@@ -27,7 +27,7 @@
         "groups": [
           {
             "group": "Getting started",
-            "pages": ["index"]
+            "pages": ["index", "connect"]
           },
           {
             "group": "Integrations",
