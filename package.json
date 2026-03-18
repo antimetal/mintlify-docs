@@ -1,0 +1,17 @@
+{
+  "name": "mintlify-docs",
+  "scripts": {
+    "fetch:oas": "mkdir -p assets && curl -fsSL https://app.stainless.com/api/spec/documented/overlook/openapi.documented.yml -o assets/openapi.with-code-samples.yml",
+    "mintlify:oas": "node ./scripts/mintlify-oas.js",
+    "dev": "npm run fetch:oas && npm run mintlify:oas && mint dev"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "devDependencies": {
+    "mintlify": "^4.2.437",
+    "tsx": "^4.21.0",
+    "yaml": "^2.8.2"
+  }
+}

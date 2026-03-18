@@ -27,9 +27,7 @@
         "groups": [
           {
             "group": "Getting started",
-            "pages": [
-              "index"
-            ]
+            "pages": ["index"]
           },
           {
             "group": "Integrations",
@@ -53,6 +51,12 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "API reference",
+        "openapi": {
+          "source": "/assets/openapi.mintlify.json"
+        }
       }
     ],
     "global": {
@@ -84,15 +88,15 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {

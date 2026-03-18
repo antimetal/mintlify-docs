@@ -1,0 +1,2609 @@
+openapi: 3.0.0
+paths:
+  /issues:
+    post:
+      description: >-
+        Creates a new issue and optionally starts an automated investigation.
+        The issue is created from the provided details, with a seed generated
+        internally. Investigation runs asynchronously - poll GET /issues/{id} to
+        check status.
+      operationId: createIssue
+      parameters:
+        - $ref: '#/components/parameters/AntimetalVersion'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIssueDto'
+      responses:
+        '201':
+          description: Issue created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateIssueResponseDto'
+        '400':
+          description: Validation error or bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+      summary: Create a new issue
+      tags:
+        - Issues
+      x-codeSamples:
+        - lang: JavaScript
+          source: |-
+            import Antimetal from '@antimetal/sdk';
+
+            const client = new Antimetal({
+              apiKey: process.env['ANTIMETAL_API_KEY'], // This is the default and can be omitted
+            });
+
+            const issue = await client.issues.create({
+              description: 'x',
+              environment: 'x',
+              title: 'x',
+            });
+
+            console.log(issue.uuid);
+    get:
+      description: Returns a paginated list of issues for the authenticated organization
+      operationId: listIssues
+      parameters:
+        - $ref: '#/components/parameters/AntimetalVersion'
+        - name: limit
+          required: false
+          in: query
+          description: Number of items to return (1-100)
+          schema:
+            minimum: 1
+            maximum: 100
+            default: 10
+            type: integer
+        - name: startingAfter
+          required: false
+          in: query
+          description: Cursor for forward pagination (ID/UUID to start after)
+          schema:
+            type: string
+        - name: endingBefore
+          required: false
+          in: query
+          description: Cursor for backward pagination (ID/UUID to end before)
+          schema:
+            type: string
+        - name: status
+          required: false
+          in: query
+          description: Filter by issue status
+          schema:
+            type: string
+            enum:
+              - investigating
+              - ready_to_fix
+              - resolved
+              - muted
+        - name: environment
+          required: false
+          in: query
+          description: Filter by environment (exact match)
+          schema:
+            minLength: 1
+            type: string
+        - name: search
+          required: false
+          in: query
+          description: >-
+            Search issues by title or description (case-insensitive substring
+            match)
+          schema:
+            minLength: 1
+            type: string
+      responses:
+        '200':
+          description: Paginated list of issues
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  object:
+                    type: string
+                    enum:
+                      - list
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IssueSummaryDto'
+                  has_more:
+                    type: boolean
+                  after:
+                    type: string
+                  before:
+                    type: string
+                required:
+                  - object
+                  - data
+                  - has_more
+        '400':
+          description: Validation error or bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+      summary: Fetch issues for an organization
+      tags:
+        - Issues
+      x-codeSamples:
+        - lang: JavaScript
+          source: |-
+            import Antimetal from '@antimetal/sdk';
+
+            const client = new Antimetal({
+              apiKey: process.env['ANTIMETAL_API_KEY'], // This is the default and can be omitted
+            });
+
+            // Automatically fetches more pages as needed.
+            for await (const issueListResponse of client.issues.list()) {
+              console.log(issueListResponse.uuid);
+            }
+  /issues/by_number/{number}:
+    get:
+      description: Lightweight endpoint to retrieve basic issue information by issue number
+      operationId: getIssueByNumber
+      parameters:
+        - $ref: '#/components/parameters/AntimetalVersion'
+        - name: number
+          required: true
+          in: path
+          description: Issue number (organization-scoped)
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            example: 123
+      responses:
+        '200':
+          description: Issue details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssueDto'
+        '404':
+          description: Issue not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Internal Server Error
+      summary: Fetch issue by number
+      tags:
+        - Issues
+      x-codeSamples:
+        - lang: JavaScript
+          source: |-
+            import Antimetal from '@antimetal/sdk';
+
+            const client = new Antimetal({
+              apiKey: process.env['ANTIMETAL_API_KEY'], // This is the default and can be omitted
+            });
+
+            const issue = await client.issues.retrieveByNumber(123);
+
+            console.log(issue.uuid);
+  /issues/{id}:
+    get:
+      description: Retrieves detailed information about a specific issue by its ID (UUID)
+      operationId: getIssue
+      parameters:
+        - $ref: '#/components/parameters/AntimetalVersion'
+        - name: version
+          required: false
+          in: query
+          description: Issue version (defaults to latest)
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+        - name: id
+          required: true
+          in: path
+          description: Issue unique identifier (UUID)
+          schema:
+            type: string
+            format: uuid
+            pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      responses:
+        '200':
+          description: Issue details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssueDto'
+        '400':
+          description: Validation error or bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+      summary: Fetch an issue by ID (UUID)
+      tags:
+        - Issues
+      x-codeSamples:
+        - lang: JavaScript
+          source: >-
+            import Antimetal from '@antimetal/sdk';
+
+
+            const client = new Antimetal({
+              apiKey: process.env['ANTIMETAL_API_KEY'], // This is the default and can be omitted
+            });
+
+
+            const issue = await
+            client.issues.retrieve('182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e');
+
+
+            console.log(issue.uuid);
+    patch:
+      description: Updates the status of an existing issue by its ID (UUID)
+      operationId: updateIssueStatus
+      parameters:
+        - $ref: '#/components/parameters/AntimetalVersion'
+        - name: id
+          required: true
+          in: path
+          description: Issue unique identifier (UUID)
+          schema:
+            type: string
+            format: uuid
+            pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIssueStatusDto'
+      responses:
+        '200':
+          description: Updated issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssueDto'
+        '400':
+          description: Validation error or bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+      summary: Update issue status by ID (UUID)
+      tags:
+        - Issues
+      x-codeSamples:
+        - lang: JavaScript
+          source: >-
+            import Antimetal from '@antimetal/sdk';
+
+
+            const client = new Antimetal({
+              apiKey: process.env['ANTIMETAL_API_KEY'], // This is the default and can be omitted
+            });
+
+
+            const issue = await
+            client.issues.update('182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e', {
+              status: 'investigating',
+            });
+
+
+            console.log(issue.uuid);
+    delete:
+      description: Permanently deletes an issue and all associated data
+      operationId: deleteIssue
+      parameters:
+        - $ref: '#/components/parameters/AntimetalVersion'
+        - name: id
+          required: true
+          in: path
+          description: Issue unique identifier (UUID)
+          schema:
+            type: string
+            format: uuid
+            pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      responses:
+        '204':
+          description: Issue deleted successfully
+        '400':
+          description: Validation error or bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+      summary: Delete an issue
+      tags:
+        - Issues
+      x-codeSamples:
+        - lang: JavaScript
+          source: |-
+            import Antimetal from '@antimetal/sdk';
+
+            const client = new Antimetal({
+              apiKey: process.env['ANTIMETAL_API_KEY'], // This is the default and can be omitted
+            });
+
+            await client.issues.delete('182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e');
+  /issues/{id}/results:
+    get:
+      description: >-
+        Retrieves detailed investigation results including root cause analysis
+        and remediation steps
+      operationId: getIssueResults
+      parameters:
+        - $ref: '#/components/parameters/AntimetalVersion'
+        - name: version
+          required: false
+          in: query
+          description: Issue version for workflow results (defaults to latest)
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+        - name: id
+          required: true
+          in: path
+          description: Issue unique identifier (UUID)
+          schema:
+            type: string
+            format: uuid
+            pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      responses:
+        '200':
+          description: Investigation results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssueResultsDto'
+        '400':
+          description: Validation error or bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+      summary: Fetch investigation results by ID (UUID)
+      tags:
+        - Issues
+      x-codeSamples:
+        - lang: JavaScript
+          source: >-
+            import Antimetal from '@antimetal/sdk';
+
+
+            const client = new Antimetal({
+              apiKey: process.env['ANTIMETAL_API_KEY'], // This is the default and can be omitted
+            });
+
+
+            const result = await
+            client.issues.results.retrieve('182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e');
+
+
+            console.log(result.sessionUuid);
+  /artifacts:
+    get:
+      description: >-
+        Fetches multiple evidential artifacts by their IDs. Supports up to 100
+        IDs per request.
+      operationId: batchGetArtifacts
+      parameters:
+        - $ref: '#/components/parameters/AntimetalVersion'
+        - name: id
+          required: true
+          in: query
+          description: >-
+            Artifact IDs to retrieve (can be specified multiple times:
+            ?id=foo&id=bar)
+          explode: true
+          schema:
+            maxItems: 100
+            example: art_123
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/MetricArtifactDto'
+                    - $ref: '#/components/schemas/TraceArtifactDto'
+                    - $ref: '#/components/schemas/LogArtifactDto'
+                    - $ref: '#/components/schemas/FileArtifactDto'
+                    - $ref: '#/components/schemas/EventArtifactDto'
+                    - $ref: '#/components/schemas/TopologyArtifactDto'
+                  discriminator:
+                    propertyName: type
+                    mapping:
+                      metric: '#/components/schemas/MetricArtifactDto'
+                      trace: '#/components/schemas/TraceArtifactDto'
+                      log: '#/components/schemas/LogArtifactDto'
+                      file: '#/components/schemas/FileArtifactDto'
+                      event: '#/components/schemas/EventArtifactDto'
+                      topology: '#/components/schemas/TopologyArtifactDto'
+        '400':
+          description: Validation error or bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+      summary: Retrieve artifacts by IDs
+      tags:
+        - Artifacts
+      x-codeSamples:
+        - lang: JavaScript
+          source: |-
+            import Antimetal from '@antimetal/sdk';
+
+            const client = new Antimetal({
+              apiKey: process.env['ANTIMETAL_API_KEY'], // This is the default and can be omitted
+            });
+
+            const artifacts = await client.artifacts.list({ id: ['string'] });
+
+            console.log(artifacts);
+  /query:
+    post:
+      description: >-
+        Sends a question to Antimetal's AI agent and returns a natural language
+        answer. Pass the returned conversation_id in subsequent requests to
+        continue the conversation. Set stream: true (and Accept:
+        text/event-stream) to receive a Server-Sent Events stream.
+      operationId: query
+      parameters:
+        - $ref: '#/components/parameters/AntimetalVersion'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequestDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResponseDto'
+        '400':
+          description: Validation error or bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+      summary: Ask Antimetal's AI agent a question
+      tags:
+        - Query
+      x-codeSamples:
+        - lang: JavaScript
+          source: |-
+            import Antimetal from '@antimetal/sdk';
+
+            const client = new Antimetal({
+              apiKey: process.env['ANTIMETAL_API_KEY'], // This is the default and can be omitted
+            });
+
+            const queryResponse = await client.query.ask({ question: 'x' });
+
+            console.log(queryResponse.conversation_id);
+info:
+  title: Antimetal External API
+  description: >-
+    Public-facing API for external integrations with Antimetal. Provides
+    programmatic access to issue investigation, results, artifacts, and chat
+    functionality.
+  version: '2026-03-17'
+  contact: {}
+tags: []
+servers:
+  - url: https://bff.antimetal.com/api/v2
+    description: Production API
+  - url: https://bff.dev.antimetal.com/api/v2
+    description: Dev API
+components:
+  schemas:
+    CreateIssueDto:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Issue title (human-readable summary)
+        description:
+          type: string
+          minLength: 1
+          description: Detailed description of the issue
+        environment:
+          type: string
+          minLength: 1
+          description: Environment where the issue occurred (e.g., production, staging)
+        severity:
+          description: Issue severity level (defaults to MEDIUM if not specified)
+          type: string
+          enum:
+            - low
+            - medium
+            - high
+        triggeredAt:
+          description: >-
+            ISO 8601 timestamp when the issue was triggered (defaults to current
+            time)
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        context:
+          description: Additional context metadata for enriching the investigation
+          type: object
+          properties:
+            alertUrl:
+              description: >-
+                URL to the alert or incident in the source system (e.g.,
+                Datadog, Sentry)
+              type: string
+              format: uri
+            service:
+              description: Service or application name where the issue occurred
+              type: string
+            traceId:
+              description: Distributed trace ID for correlation
+              type: string
+            spanId:
+              description: Span ID within the trace
+              type: string
+            errorType:
+              description: >-
+                Error classification or exception type (e.g., 'TimeoutError',
+                'DatabaseConnectionError')
+              type: string
+            errorMessage:
+              description: Error message or stack trace excerpt
+              type: string
+            host:
+              description: Hostname or instance ID where the issue occurred
+              type: string
+            region:
+              description: Cloud region or availability zone
+              type: string
+            version:
+              description: Application version or deployment identifier
+              type: string
+            tags:
+              description: >-
+                Arbitrary tags for categorization (e.g., ['payment',
+                'critical'])
+              type: array
+              items:
+                type: string
+            metadata:
+              description: Additional provider-specific or custom metadata
+              type: object
+              propertyNames:
+                type: string
+              additionalProperties: {}
+      required:
+        - title
+        - description
+        - environment
+    CreateIssueResponseDto:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: Issue unique identifier
+        number:
+          type: integer
+          exclusiveMinimum: 0
+          maximum: 9007199254740991
+          description: Issue number (scoped per-organization)
+        status:
+          type: string
+          enum:
+            - investigating
+            - ready_to_fix
+            - resolved
+            - muted
+          description: Current issue status
+        title:
+          type: string
+          description: Issue title
+        description:
+          type: string
+          description: Issue description
+        environment:
+          description: Environment where issue occurred
+          type: string
+        severity:
+          type: string
+          enum:
+            - low
+            - medium
+            - high
+          description: Issue severity level
+        createdAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+          description: Date and time the issue was created
+        updatedAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+          description: Date and time the issue was last updated
+        triggeredAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+          description: Timestamp when the issue was triggered
+        latestVersion:
+          type: integer
+          minimum: 1
+          maximum: 9007199254740991
+          description: Most recent version of this issue
+      required:
+        - uuid
+        - number
+        - status
+        - title
+        - description
+        - severity
+        - createdAt
+        - updatedAt
+        - triggeredAt
+        - latestVersion
+    ErrorResponseDto:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - api_error
+            - invalid_request_error
+            - authentication_error
+          description: Error type classification
+        message:
+          type: string
+          description: Human-readable error message
+        request_id:
+          type: string
+          description: Request correlation ID for tracing and support
+        details:
+          description: Detailed field-level validation errors (for 400/422 responses)
+          type: object
+          propertyNames:
+            type: string
+          additionalProperties:
+            type: string
+      required:
+        - type
+        - message
+        - request_id
+    IssueSummaryDto:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: Issue unique identifier
+        number:
+          type: integer
+          exclusiveMinimum: 0
+          maximum: 9007199254740991
+          description: Issue number (scoped per-organization)
+        title:
+          type: string
+          description: Issue title
+        description:
+          type: string
+          description: Issue description
+        severity:
+          type: string
+          enum:
+            - low
+            - medium
+            - high
+          description: Issue severity level
+        status:
+          type: string
+          enum:
+            - investigating
+            - ready_to_fix
+            - resolved
+            - muted
+          description: Current issue status
+        environment:
+          type: string
+          description: Environment where issue occurred
+        triggeredAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+          description: Event timestamp
+        seedCount:
+          type: integer
+          minimum: 0
+          maximum: 9007199254740991
+          description: Number of seeds for this issue
+      required:
+        - uuid
+        - number
+        - title
+        - description
+        - severity
+        - status
+        - environment
+        - triggeredAt
+        - seedCount
+    IssueDto:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: Issue unique identifier
+        number:
+          type: integer
+          exclusiveMinimum: 0
+          maximum: 9007199254740991
+          description: Issue number (scoped per-organization)
+        title:
+          type: string
+          description: Issue title
+        description:
+          type: string
+          description: Issue description
+        severity:
+          type: string
+          enum:
+            - low
+            - medium
+            - high
+          description: Issue severity level
+        status:
+          type: string
+          enum:
+            - investigating
+            - ready_to_fix
+            - resolved
+            - muted
+          description: Current issue status
+        environment:
+          type: string
+          description: Environment where issue occurred
+        triggeredAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+          description: Earliest trigger time from seeds
+        createdAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+          description: Date and time the issue was created
+        updatedAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+          description: Date and time the issue was last updated
+        seedCount:
+          type: integer
+          minimum: 0
+          maximum: 9007199254740991
+          description: Number of seeds for this issue
+        seeds:
+          type: array
+          items:
+            type: object
+            properties:
+              publicUuid:
+                type: string
+                format: uuid
+                pattern: >-
+                  ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$
+                description: UUID of the seed
+              seedType:
+                type: string
+                enum:
+                  - alert
+                  - user_query
+                description: Type of seed (alert, user_query, etc.)
+              provider:
+                type: string
+                enum:
+                  - datadog
+                  - github
+                  - slack
+                  - antimetal
+                  - sentry
+                  - kubernetes
+                  - incident-io
+                  - prometheus
+                  - grafana-tempo
+                  - loki
+                  - gcp
+                  - cloudwatch
+                  - user
+                description: Provider that generated this seed
+              providerReferenceId:
+                type: string
+                description: Reference ID from the provider
+              title:
+                type: string
+                description: Title of the seed
+              description:
+                type: string
+                description: Description of the seed
+              tags:
+                type: array
+                items:
+                  type: string
+                description: Tags associated with the seed
+              link:
+                description: Optional link related to the seed
+                anyOf:
+                  - type: string
+                  - type: 'null'
+              query:
+                description: Optional query related to the seed
+                anyOf:
+                  - type: string
+                  - type: 'null'
+              rawPayload:
+                description: Raw payload data from the provider
+                anyOf:
+                  - type: object
+                    propertyNames:
+                      type: string
+                    additionalProperties: {}
+                  - type: 'null'
+              triggeredAt:
+                type: string
+                format: date-time
+                pattern: >-
+                  ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+                description: Date and time the seed was triggered
+            required:
+              - publicUuid
+              - seedType
+              - provider
+              - providerReferenceId
+              - title
+              - description
+              - tags
+              - triggeredAt
+          description: Seeds associated with the issue
+        latestVersion:
+          type: integer
+          minimum: 1
+          maximum: 9007199254740991
+          description: Most recent version of this issue
+        versions:
+          type: array
+          items:
+            type: object
+            properties:
+              uuid:
+                type: string
+                description: Version unique identifier
+              version:
+                type: integer
+                minimum: 1
+                maximum: 9007199254740991
+              status:
+                type: string
+                enum:
+                  - SUCCESS
+                  - NOOP
+                  - ERROR
+                  - PENDING
+                description: Conclusion status of this version
+              description:
+                description: Description of the changes in the version
+                type: string
+            required:
+              - uuid
+              - version
+              - status
+          description: Available versions of the issue
+      required:
+        - uuid
+        - number
+        - title
+        - description
+        - severity
+        - status
+        - environment
+        - triggeredAt
+        - createdAt
+        - updatedAt
+        - seedCount
+        - seeds
+        - latestVersion
+        - versions
+    UpdateIssueStatusDto:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - investigating
+            - ready_to_fix
+            - resolved
+            - muted
+          description: The new status for the issue
+      required:
+        - status
+    IssueResultsDto:
+      type: object
+      properties:
+        sessionUuid:
+          anyOf:
+            - type: string
+            - type: 'null'
+          description: Session UUID for live investigation
+        rootCause:
+          anyOf:
+            - type: object
+              properties:
+                id:
+                  type: string
+                  description: Root cause identifier
+                incidentOverview:
+                  type: string
+                  description: Root cause problem overview
+                rootCauseSummary:
+                  type: string
+                  description: Root cause analysis summary
+                relevantEvidence:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        description: Evidence title
+                      status:
+                        type: string
+                        enum:
+                          - relevant
+                          - irrelevant
+                          - inconclusive
+                        description: Evidence status
+                      description:
+                        type: string
+                        description: Evidence description
+                      confidence:
+                        type: string
+                        enum:
+                          - unknown
+                          - unclear
+                          - probable
+                          - likely
+                          - confirmed
+                        description: Evidence confidence level
+                      artifacts:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            documentId:
+                              type: string
+                              description: Document identifier for artifact fetching
+                            title:
+                              type: string
+                              description: Artifact title
+                            description:
+                              type: string
+                              description: Artifact description
+                            dataType:
+                              type: string
+                              description: Type of data in this artifact
+                          required:
+                            - documentId
+                            - title
+                            - description
+                            - dataType
+                        description: Evidence artifacts with document references
+                    required:
+                      - title
+                      - status
+                      - description
+                      - confidence
+                      - artifacts
+                  description: Relevant evidence supporting the root cause
+                irrelevantEvidence:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        description: Evidence title
+                      status:
+                        type: string
+                        enum:
+                          - relevant
+                          - irrelevant
+                          - inconclusive
+                        description: Evidence status
+                      description:
+                        type: string
+                        description: Evidence description
+                      confidence:
+                        type: string
+                        enum:
+                          - unknown
+                          - unclear
+                          - probable
+                          - likely
+                          - confirmed
+                        description: Evidence confidence level
+                      artifacts:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            documentId:
+                              type: string
+                              description: Document identifier for artifact fetching
+                            title:
+                              type: string
+                              description: Artifact title
+                            description:
+                              type: string
+                              description: Artifact description
+                            dataType:
+                              type: string
+                              description: Type of data in this artifact
+                          required:
+                            - documentId
+                            - title
+                            - description
+                            - dataType
+                        description: Evidence artifacts with document references
+                    required:
+                      - title
+                      - status
+                      - description
+                      - confidence
+                      - artifacts
+                  description: Irrelevant evidence ruled out during investigation
+              required:
+                - id
+                - incidentOverview
+                - rootCauseSummary
+                - relevantEvidence
+                - irrelevantEvidence
+            - type: 'null'
+          description: Root cause information
+        causalTree:
+          type: object
+          properties:
+            nodes:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique identifier for this node.
+                  type:
+                    type: string
+                    enum:
+                      - validated
+                      - needs-context
+                      - ruled-out
+                    description: Node type indicating its state in the causal analysis
+                  title:
+                    type: string
+                    description: Short title of the node
+                  description:
+                    type: string
+                    description: Detailed description of the node
+                  expandedContent:
+                    description: >-
+                      Optional rich text content in Markdown format providing
+                      detailed explanation
+                    type: string
+                required:
+                  - id
+                  - type
+                  - title
+                  - description
+            edges:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique identifier for this edge
+                  source:
+                    type: string
+                    description: ID of the source node
+                  target:
+                    type: string
+                    description: ID of the target node
+                required:
+                  - id
+                  - source
+                  - target
+          required:
+            - nodes
+            - edges
+          description: Causal tree analysis
+        causalTreeV2:
+          type: object
+          properties:
+            nodes:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: >-
+                      Unique identifier for this node in the causal graph
+                      (causal variable) e.g. db_connection_error or
+                      deployment_change.
+                  title:
+                    type: string
+                    description: >-
+                      Brief display name for the causal variable. Use active
+                      verbs to show causal flow. CAUSE nodes: action-focused
+                      (e.g., 'Flag Activates Bad Store Routing', 'Deployment
+                      Introduces Memory Leak'). MEDIATOR nodes:
+                      consequence-focused (e.g., 'Requests Routed to Invalid
+                      Endpoint', 'Memory Exhaustion Occurs'). OUTCOME nodes:
+                      consequence-focused (e.g., 'Service Errors Exceed
+                      Threshold', 'Response Times Degrade Beyond SLA'). Keep
+                      under 8 words.
+                  description:
+                    type: string
+                    description: >-
+                      Succinct explanation (1-2 sentences, ~30 words) describing
+                      what the underlying evidence shows and the node's role in
+                      the incident. Use technical precision: include service
+                      names, error codes, field names, file paths. Use direct
+                      factual statements without explanations. Skip discovery
+                      details - focus on what happened, not how it was found.
+                      Include causal mechanism if relevant. Example:
+                      'Configuration shows paymentFailure flag enabled at 12.5%
+                      rate, implementing probabilistic failure injection via
+                      Math.random() in charge.js:37.' Let evidence documents
+                      contain detailed data.
+                  confidence:
+                    type: string
+                    enum:
+                      - unknown
+                      - unclear
+                      - probable
+                      - likely
+                      - confirmed
+                    description: >-
+                      Confidence in this node's role in the incident (e.g., how
+                      certain we are that this factor accurately represents what
+                      happened)
+                  nodeType:
+                    type: string
+                    enum:
+                      - outcome
+                      - cause
+                      - confounder
+                      - mediator
+                    description: >-
+                      Role in the causal graph: OUTCOME = the problem you're
+                      investigating, CAUSE = what triggered it, CONFOUNDER =
+                      external factor affecting multiple variables, MEDIATOR =
+                      intermediate step in the causal path
+                  evidence:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        documentId:
+                          type: string
+                          description: >-
+                            Unique identifier for the document that contains
+                            this evidence (e.g.,
+                            'log:datadog:a9c1319258284740a7e5704134d90238',
+                            'trace:gcp:abc123',
+                            'file:github:24192d3b6c1292fd29da76ada910c175')
+                        title:
+                          type: string
+                          minLength: 1
+                          description: >-
+                            Human-readable name for this piece of evidence
+                            (e.g., 'Unbounded Cache Growth in
+                            recommendation_server.py', 'Deployment memory limit
+                            configuration','Deploy Script v2.1')
+                        description:
+                          type: string
+                          minLength: 1
+                          description: >-
+                            Direct factual statement about what the evidence
+                            shows and why it's relevant to the causal
+                            relationship (e.g., 'Shows 300% CPU spike at 14:23,
+                            correlating with error rate increase')
+                        dataType:
+                          type: string
+                          description: >-
+                            Type of artifact extracted from documentId (log,
+                            metric, trace, file, etc.)
+                      required:
+                        - documentId
+                        - title
+                        - description
+                        - dataType
+                required:
+                  - id
+                  - title
+                  - description
+                  - confidence
+                  - nodeType
+                  - evidence
+            edges:
+              type: array
+              items:
+                type: object
+                properties:
+                  from:
+                    type: string
+                    description: Unique identifier for the source node in the causal graph.
+                  to:
+                    type: string
+                    description: Unique identifier for the target node in the causal graph.
+                  confidence:
+                    type: number
+                    minimum: 0
+                    maximum: 1
+                    description: >-
+                      Edge confidence reflects how certain we are about the
+                      causal relationship itself (e.g. how confident we are that
+                      the deployment caused the memory leak).
+                required:
+                  - from
+                  - to
+                  - confidence
+          required:
+            - nodes
+            - edges
+          description: Causal graph V2 with enriched evidence
+        remediation:
+          type: object
+          properties:
+            actions:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Action identifier
+                  uuid:
+                    type: string
+                    description: Action UUID
+                  title:
+                    type: string
+                    description: Action title
+                  description:
+                    description: Optional action description
+                    type: string
+                  category:
+                    description: >-
+                      Remediation category: immediate (quick stabilization),
+                      root_cause (fixes underlying issue), preventative
+                      (prevents recurrence)
+                    type: string
+                    enum:
+                      - immediate
+                      - root_cause
+                      - preventative
+                  steps:
+                    type: array
+                    items:
+                      oneOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              description: Step identifier
+                            title:
+                              type: string
+                              description: Step title
+                            helpMarkdown:
+                              description: Optional help text in markdown
+                              type: string
+                            required:
+                              type: boolean
+                              description: Whether this step is required
+                            label:
+                              description: Optional label for the step
+                              type: string
+                            type:
+                              type: string
+                              description: Info step type
+                              enum:
+                                - info
+                            content:
+                              type: string
+                              description: Markdown content to display
+                          required:
+                            - id
+                            - title
+                            - required
+                            - type
+                            - content
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              description: Step identifier
+                            title:
+                              type: string
+                              description: Step title
+                            helpMarkdown:
+                              description: Optional help text in markdown
+                              type: string
+                            required:
+                              type: boolean
+                              description: Whether this step is required
+                            label:
+                              description: Optional label for the step
+                              type: string
+                            type:
+                              type: string
+                              description: Code step type
+                              enum:
+                                - code
+                            files:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  filename:
+                                    type: string
+                                    description: Name of the code file
+                                  language:
+                                    description: >-
+                                      Programming language for syntax
+                                      highlighting
+                                    type: string
+                                  content:
+                                    type: string
+                                    description: File content
+                                required:
+                                  - filename
+                                  - content
+                              description: Array of code files to modify
+                            activeFilename:
+                              description: Currently active/selected filename
+                              type: string
+                          required:
+                            - id
+                            - title
+                            - required
+                            - type
+                            - files
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              description: Step identifier
+                            title:
+                              type: string
+                              description: Step title
+                            helpMarkdown:
+                              description: Optional help text in markdown
+                              type: string
+                            required:
+                              type: boolean
+                              description: Whether this step is required
+                            label:
+                              description: Optional label for the step
+                              type: string
+                            type:
+                              type: string
+                              description: CLI step type
+                              enum:
+                                - cli
+                            command:
+                              type: string
+                              description: Shell command to execute
+                          required:
+                            - id
+                            - title
+                            - required
+                            - type
+                            - command
+                    description: Array of remediation steps
+                  markdownPrompt:
+                    description: Markdown prompt describing the suggested steps
+                    type: string
+                required:
+                  - id
+                  - uuid
+                  - title
+                  - steps
+              description: Available remediation actions
+          required:
+            - actions
+          description: Remediation actions and steps
+        timeline:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+                enum:
+                  - outcome
+                  - cause
+                  - confounder
+                  - mediator
+                nullable: true
+              timestamp:
+                type: string
+                format: date-time
+                pattern: >-
+                  ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+                nullable: true
+              title:
+                type: string
+              description:
+                type: string
+              evidence:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    artifactId:
+                      type: string
+                      nullable: true
+                    timestamp:
+                      type: string
+                      format: date-time
+                      pattern: >-
+                        ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+                      nullable: true
+                    title:
+                      type: string
+                    description:
+                      type: string
+                  required:
+                    - artifactId
+                    - timestamp
+                    - title
+                    - description
+            required:
+              - id
+              - type
+              - timestamp
+              - title
+              - description
+              - evidence
+          description: Timeline events
+      required:
+        - sessionUuid
+        - rootCause
+        - causalTree
+        - causalTreeV2
+        - remediation
+        - timeline
+    MetricArtifactDto:
+      type: object
+      properties:
+        id:
+          type: string
+        provider:
+          type: string
+          enum:
+            - datadog
+            - github
+            - slack
+            - antimetal
+            - sentry
+            - kubernetes
+            - incident-io
+            - prometheus
+            - grafana-tempo
+            - loki
+            - gcp
+            - cloudwatch
+            - user
+        providerUrl:
+          type: string
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        updatedAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        type:
+          type: string
+          enum:
+            - metric
+        data:
+          oneOf:
+            - type: object
+              properties:
+                metricType:
+                  type: string
+                  enum:
+                    - gauge
+                name:
+                  type: string
+                description:
+                  type: string
+                unit:
+                  type: string
+                dataPoints:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      attributes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/MetricArtifactDto__schema0'
+                      startTimeUnixNano:
+                        type: string
+                      timeUnixNano:
+                        type: string
+                      asDouble:
+                        anyOf:
+                          - type: number
+                          - type: string
+                            enum:
+                              - NaN
+                          - type: string
+                            enum:
+                              - Infinity
+                          - type: string
+                            enum:
+                              - '-Infinity'
+                      asInt:
+                        type: string
+                      exemplars:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            filteredAttributes:
+                              type: array
+                              items:
+                                $ref: >-
+                                  #/components/schemas/MetricArtifactDto__schema0
+                            timeUnixNano:
+                              type: string
+                            asDouble:
+                              anyOf:
+                                - type: number
+                                - type: string
+                                  enum:
+                                    - NaN
+                                - type: string
+                                  enum:
+                                    - Infinity
+                                - type: string
+                                  enum:
+                                    - '-Infinity'
+                            asInt:
+                              type: string
+                            spanId:
+                              type: string
+                            traceId:
+                              type: string
+                      flags:
+                        type: number
+              required:
+                - metricType
+                - name
+                - description
+                - unit
+                - dataPoints
+            - type: object
+              properties:
+                metricType:
+                  type: string
+                  enum:
+                    - sum
+                name:
+                  type: string
+                description:
+                  type: string
+                unit:
+                  type: string
+                dataPoints:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      attributes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/MetricArtifactDto__schema0'
+                      startTimeUnixNano:
+                        type: string
+                      timeUnixNano:
+                        type: string
+                      asDouble:
+                        anyOf:
+                          - type: number
+                          - type: string
+                            enum:
+                              - NaN
+                          - type: string
+                            enum:
+                              - Infinity
+                          - type: string
+                            enum:
+                              - '-Infinity'
+                      asInt:
+                        type: string
+                      exemplars:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            filteredAttributes:
+                              type: array
+                              items:
+                                $ref: >-
+                                  #/components/schemas/MetricArtifactDto__schema0
+                            timeUnixNano:
+                              type: string
+                            asDouble:
+                              anyOf:
+                                - type: number
+                                - type: string
+                                  enum:
+                                    - NaN
+                                - type: string
+                                  enum:
+                                    - Infinity
+                                - type: string
+                                  enum:
+                                    - '-Infinity'
+                            asInt:
+                              type: string
+                            spanId:
+                              type: string
+                            traceId:
+                              type: string
+                      flags:
+                        type: number
+              required:
+                - metricType
+                - name
+                - description
+                - unit
+                - dataPoints
+            - type: object
+              properties:
+                metricType:
+                  type: string
+                  enum:
+                    - histogram
+                name:
+                  type: string
+                description:
+                  type: string
+                unit:
+                  type: string
+                dataPoints:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      attributes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/MetricArtifactDto__schema0'
+                      startTimeUnixNano:
+                        type: string
+                      timeUnixNano:
+                        type: string
+                      count:
+                        type: string
+                      sum:
+                        anyOf:
+                          - type: number
+                          - type: string
+                            enum:
+                              - NaN
+                          - type: string
+                            enum:
+                              - Infinity
+                          - type: string
+                            enum:
+                              - '-Infinity'
+                      bucketCounts:
+                        type: array
+                        items:
+                          type: string
+                      explicitBounds:
+                        type: array
+                        items:
+                          anyOf:
+                            - type: number
+                            - type: string
+                              enum:
+                                - NaN
+                            - type: string
+                              enum:
+                                - Infinity
+                            - type: string
+                              enum:
+                                - '-Infinity'
+                      exemplars:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            filteredAttributes:
+                              type: array
+                              items:
+                                $ref: >-
+                                  #/components/schemas/MetricArtifactDto__schema0
+                            timeUnixNano:
+                              type: string
+                            asDouble:
+                              anyOf:
+                                - type: number
+                                - type: string
+                                  enum:
+                                    - NaN
+                                - type: string
+                                  enum:
+                                    - Infinity
+                                - type: string
+                                  enum:
+                                    - '-Infinity'
+                            asInt:
+                              type: string
+                            spanId:
+                              type: string
+                            traceId:
+                              type: string
+                      flags:
+                        type: number
+                      min:
+                        anyOf:
+                          - type: number
+                          - type: string
+                            enum:
+                              - NaN
+                          - type: string
+                            enum:
+                              - Infinity
+                          - type: string
+                            enum:
+                              - '-Infinity'
+                      max:
+                        anyOf:
+                          - type: number
+                          - type: string
+                            enum:
+                              - NaN
+                          - type: string
+                            enum:
+                              - Infinity
+                          - type: string
+                            enum:
+                              - '-Infinity'
+              required:
+                - metricType
+                - name
+                - description
+                - unit
+                - dataPoints
+      required:
+        - id
+        - provider
+        - providerUrl
+        - summary
+        - createdAt
+        - updatedAt
+        - type
+        - data
+    TraceArtifactDto:
+      type: object
+      properties:
+        id:
+          type: string
+        provider:
+          type: string
+          enum:
+            - datadog
+            - github
+            - slack
+            - antimetal
+            - sentry
+            - kubernetes
+            - incident-io
+            - prometheus
+            - grafana-tempo
+            - loki
+            - gcp
+            - cloudwatch
+            - user
+        providerUrl:
+          type: string
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        updatedAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        type:
+          type: string
+          enum:
+            - trace
+        data:
+          type: object
+          properties:
+            traces:
+              type: array
+              items:
+                type: object
+                properties:
+                  traceId:
+                    type: string
+                  spans:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        traceId:
+                          type: string
+                        spanId:
+                          type: string
+                        parentSpanId:
+                          type: string
+                        name:
+                          type: string
+                        timestampStartUnixNano:
+                          type: number
+                        timestampEndUnixNano:
+                          type: number
+                      required:
+                        - timestampStartUnixNano
+                        - timestampEndUnixNano
+                required:
+                  - traceId
+                  - spans
+          required:
+            - traces
+      required:
+        - id
+        - provider
+        - providerUrl
+        - summary
+        - createdAt
+        - updatedAt
+        - type
+        - data
+    LogArtifactDto:
+      type: object
+      properties:
+        id:
+          type: string
+        provider:
+          type: string
+          enum:
+            - datadog
+            - github
+            - slack
+            - antimetal
+            - sentry
+            - kubernetes
+            - incident-io
+            - prometheus
+            - grafana-tempo
+            - loki
+            - gcp
+            - cloudwatch
+            - user
+        providerUrl:
+          type: string
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        updatedAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        type:
+          type: string
+          enum:
+            - log
+        data:
+          type: object
+          properties:
+            logs:
+              type: array
+              items:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                  body:
+                    type: string
+                  severity:
+                    type: string
+                  attributes:
+                    type: object
+                    propertyNames:
+                      type: string
+                    additionalProperties:
+                      anyOf:
+                        - type: string
+                        - type: number
+                        - type: boolean
+                        - type: array
+                          items:
+                            type: string
+                required:
+                  - timestamp
+                  - body
+                  - severity
+          required:
+            - logs
+      required:
+        - id
+        - provider
+        - providerUrl
+        - summary
+        - createdAt
+        - updatedAt
+        - type
+        - data
+    FileArtifactDto:
+      type: object
+      properties:
+        id:
+          type: string
+        provider:
+          type: string
+          enum:
+            - datadog
+            - github
+            - slack
+            - antimetal
+            - sentry
+            - kubernetes
+            - incident-io
+            - prometheus
+            - grafana-tempo
+            - loki
+            - gcp
+            - cloudwatch
+            - user
+        providerUrl:
+          type: string
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        updatedAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        type:
+          type: string
+          enum:
+            - file
+        data:
+          type: object
+          properties:
+            content:
+              type: string
+              description: The text content of the file
+            metadata:
+              type: object
+              properties:
+                fileName:
+                  type: string
+                  description: The name of the file
+                filePath:
+                  type: string
+                  description: The path to the file
+                language:
+                  type: string
+                  description: The programming language of the code
+                lineStart:
+                  description: The start line of the code snippet, inclusive
+                  type: integer
+                  exclusiveMinimum: 0
+                  maximum: 9007199254740991
+                lineEnd:
+                  description: The end line of the code snippet, inclusive
+                  type: integer
+                  exclusiveMinimum: 0
+                  maximum: 9007199254740991
+              required:
+                - fileName
+                - filePath
+                - language
+          required:
+            - content
+            - metadata
+      required:
+        - id
+        - provider
+        - providerUrl
+        - summary
+        - createdAt
+        - updatedAt
+        - type
+        - data
+    EventArtifactDto:
+      type: object
+      properties:
+        id:
+          type: string
+        provider:
+          type: string
+          enum:
+            - datadog
+            - github
+            - slack
+            - antimetal
+            - sentry
+            - kubernetes
+            - incident-io
+            - prometheus
+            - grafana-tempo
+            - loki
+            - gcp
+            - cloudwatch
+            - user
+        providerUrl:
+          type: string
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        updatedAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        type:
+          type: string
+          enum:
+            - event
+        data:
+          type: object
+          properties:
+            events:
+              type: array
+              items:
+                type: object
+                properties:
+                  eventId:
+                    type: string
+                  timestampUnixNano:
+                    type: number
+                  title:
+                    type: string
+                  message:
+                    type: string
+                  service:
+                    type: string
+                required:
+                  - eventId
+                  - timestampUnixNano
+                  - title
+          required:
+            - events
+      required:
+        - id
+        - provider
+        - providerUrl
+        - summary
+        - createdAt
+        - updatedAt
+        - type
+        - data
+    TopologyArtifactDto:
+      type: object
+      properties:
+        id:
+          type: string
+        provider:
+          type: string
+          enum:
+            - datadog
+            - github
+            - slack
+            - antimetal
+            - sentry
+            - kubernetes
+            - incident-io
+            - prometheus
+            - grafana-tempo
+            - loki
+            - gcp
+            - cloudwatch
+            - user
+        providerUrl:
+          type: string
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        updatedAt:
+          type: string
+          format: date-time
+          pattern: >-
+            ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+        type:
+          type: string
+          enum:
+            - topology
+        data:
+          default: {}
+          type: object
+          propertyNames:
+            type: string
+          additionalProperties:
+            type: object
+            properties:
+              calls:
+                default: []
+                type: array
+                items:
+                  type: string
+      required:
+        - id
+        - provider
+        - providerUrl
+        - summary
+        - createdAt
+        - updatedAt
+        - type
+    QueryRequestDto:
+      type: object
+      properties:
+        question:
+          type: string
+          minLength: 1
+          description: Natural language question to ask the AI agent
+        conversation_id:
+          description: >-
+            Conversation ID from a previous query response — pass to continue
+            that conversation
+          type: string
+          format: uuid
+          pattern: >-
+            ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+        stream:
+          description: >-
+            When true, returns a Server-Sent Events stream. Must also send
+            Accept: text/event-stream header.
+          type: boolean
+      required:
+        - question
+    QueryResponseDto:
+      type: object
+      properties:
+        conversation_id:
+          type: string
+          format: uuid
+          pattern: >-
+            ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+          description: Pass in subsequent requests to continue this conversation
+        answer:
+          type: string
+          description: The AI agent's natural language answer
+        artifacts:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Artifact document ID, e.g. 'metric:datadog:abc123'
+              tool_name:
+                type: string
+                description: Name of the tool that produced this artifact
+              data_type:
+                description: 'Artifact data type: metric, log, trace, file, event, topology'
+                type: string
+              provider:
+                description: 'Provider: datadog, gcp, github, etc.'
+                type: string
+              summary:
+                description: Brief description from tool output
+                type: string
+            required:
+              - id
+              - tool_name
+          description: >-
+            Artifacts (metrics, logs, traces, etc.) the agent found while
+            answering
+      required:
+        - conversation_id
+        - answer
+        - artifacts
+    QueryChunkDto:
+      type: object
+      properties:
+        text:
+          description: Text delta — concatenate these to build the full answer
+          type: string
+        conversation_id:
+          description: >-
+            Emitted in the final chunk — the conversation ID for follow-up
+            requests
+          type: string
+          format: uuid
+          pattern: >-
+            ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+        artifact:
+          description: Emitted when a tool produces an artifact
+          type: object
+          properties:
+            id:
+              type: string
+              description: Artifact document ID, e.g. 'metric:datadog:abc123'
+            tool_name:
+              type: string
+              description: Name of the tool that produced this artifact
+            data_type:
+              description: 'Artifact data type: metric, log, trace, file, event, topology'
+              type: string
+            provider:
+              description: 'Provider: datadog, gcp, github, etc.'
+              type: string
+            summary:
+              description: Brief description from tool output
+              type: string
+          required:
+            - id
+            - tool_name
+    MetricArtifactDto__schema0:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          $ref: '#/components/schemas/MetricArtifactDto__schema1'
+    MetricArtifactDto__schema1:
+      type: object
+      properties:
+        stringValue:
+          type: string
+        boolValue:
+          type: boolean
+        intValue:
+          type: string
+        doubleValue:
+          anyOf:
+            - type: number
+            - type: string
+              enum:
+                - NaN
+            - type: string
+              enum:
+                - Infinity
+            - type: string
+              enum:
+                - '-Infinity'
+        arrayValue:
+          type: object
+          properties:
+            values:
+              type: array
+              items:
+                $ref: '#/components/schemas/MetricArtifactDto__schema1'
+        kvlistValue:
+          type: object
+          properties:
+            values:
+              type: array
+              items:
+                $ref: '#/components/schemas/MetricArtifactDto__schema0'
+        bytesValue:
+          type: string
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      description: API key authentication via Bearer token
+  parameters:
+    AntimetalVersion:
+      name: Antimetal-Version
+      in: header
+      required: false
+      description: >-
+        The API version to use. Defaults to the latest stable version if
+        omitted. Pin to the version string in this document's `info.version`
+        field to opt into exactly this version's schema.
+      schema:
+        type: string
+        example: '2026-03-17'
+        default: '2026-03-17'
+security:
+  - bearer: []

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "WebFetch(domain:mintlify.com)",
+      "WebFetch(domain:community.mintlify.com)"
+    ]
+  }
+}
