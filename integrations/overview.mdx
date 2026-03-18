@@ -7,74 +7,244 @@ Connect Antimetal to the platforms your team already relies on. Antimetal pulls 
 
 ## How integrations work
 
-All integrations are set up in the [Antimetal dashboard](https://overlook.antimetal.com/integrations). The guides below walk through any additional configuration that may be needed.
+All integrations are set up in the [Antimetal dashboard](https://overlook.antimetal.com/integrations). Some integrations require additional configuration in the third-party tool. Those have dedicated setup guides linked below.
 
-## Communication
+## Monitoring & Observability
 
-<CardGroup cols={2}>
-
-<Card title="Slack" icon="slack" href="/integrations/slack">
-  Install the Antimetal Slackbot to investigate alerts in real time.
+<CardGroup cols={3}>
+<Card title="Datadog" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://datadoghq.com&size=256" href="/integrations/datadog">
+  Metrics, logs, and incident data.
 </Card>
-
-</CardGroup>
-
-## Source Control
-
-<CardGroup cols={2}>
-
-<Card title="GitHub" icon="github" href="/integrations/github">
-  Connect your repositories via the Antimetal GitHub App.
+<Card title="Grafana" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://grafana.com&size=256" href="/integrations/grafana-cloud">
+  Grafana Cloud dashboards and alerting.
 </Card>
-
+<Card title="Sentry" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://sentry.io&size=256" href="/integrations/sentry">
+  Error and event data.
+</Card>
+<Card title="New Relic" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://newrelic.com&size=256">
+  Logs, metrics, traces, and synthetics.
+</Card>
+<Card title="Honeycomb" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://honeycomb.io&size=256">
+  Distributed tracing and telemetry.
+</Card>
+<Card title="Splunk" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://splunk.com&size=256">
+  Log search and analysis.
+</Card>
+<Card title="Loki" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://grafana.com&size=256">
+  Log aggregation and querying.
+</Card>
+<Card title="Prometheus" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://prometheus.io&size=256">
+  Metrics collection and alerting.
+</Card>
+<Card title="Tempo" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://grafana.com&size=256">
+  Distributed tracing.
+</Card>
+<Card title="Better Stack" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://betterstack.com&size=256">
+  Uptime monitoring and telemetry.
+</Card>
+<Card title="PostHog" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://posthog.com&size=256">
+  Product analytics and feature flags.
+</Card>
+<Card title="Elasticsearch" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://elastic.co&size=256">
+  Search and analyze indices and clusters.
+</Card>
+<Card title="BugSnag" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://bugsnag.com&size=256">
+  Error monitoring and stability tracking.
+</Card>
+<Card title="Instana" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://instana.com&size=256">
+  Application performance monitoring.
+</Card>
+<Card title="Amplitude" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://amplitude.com&size=256">
+  Product analytics and user behavior.
+</Card>
+<Card title="Axiom" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://axiom.co&size=256">
+  Log management and analytics.
+</Card>
+<Card title="Chronosphere" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://chronosphere.io&size=256">
+  Cloud-native observability.
+</Card>
+<Card title="Coralogix" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://coralogix.com&size=256">
+  Log analytics and monitoring.
+</Card>
+<Card title="Dynatrace" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://dynatrace.com&size=256">
+  Full-stack observability.
+</Card>
+<Card title="Logfire" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://pydantic.dev&size=256">
+  Logging and observability.
+</Card>
+<Card title="Mezmo" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://mezmo.com&size=256">
+  Log management and analysis.
+</Card>
 </CardGroup>
 
 ## Cloud & Infrastructure
 
-<CardGroup cols={2}>
-
-<Card title="CloudWatch" icon="cloud" href="/integrations/cloudwatch">
-  Connect your AWS CloudWatch logs and metrics via a cross-account IAM Role.
+<CardGroup cols={3}>
+<Card title="CloudWatch" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://aws.amazon.com&size=256" href="/integrations/cloudwatch">
+  AWS CloudWatch logs and metrics.
 </Card>
-
-<Card title="GCP" icon="google" href="/integrations/gcp">
-  Monitor traces, logs, and metrics across your Google Cloud projects.
+<Card title="GCP" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://cloud.google.com&size=256" href="/integrations/gcp">
+  Google Cloud traces, logs, and metrics.
 </Card>
-
-</CardGroup>
-
-## Monitoring & Observability
-
-<CardGroup cols={2}>
-
-<Card title="Datadog" icon="chart-mixed" href="/integrations/datadog">
-  Pull in metrics, logs, and incident data from Datadog.
+<Card title="Cloudflare Observability" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://cloudflare.com&size=256">
+  Analytics, monitoring, and observability.
 </Card>
-
-<Card title="Grafana Cloud" icon="chart-line" href="/integrations/grafana-cloud">
-  Connect your Grafana Cloud Loki, Tempo, and Prometheus instances.
+<Card title="Cloudflare AI Gateway" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://cloudflare.com&size=256">
+  AI Gateway logs, prompts, and responses.
 </Card>
-
-<Card title="Sentry" icon="bug" href="/integrations/sentry">
-  Ingest error and event data from Sentry.
+<Card title="Cloudflare DNS Analytics" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://cloudflare.com&size=256">
+  DNS performance analysis and configuration.
 </Card>
-
+<Card title="Cloudflare Logpush" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://cloudflare.com&size=256">
+  Log streaming and analytics.
+</Card>
+<Card title="Vercel" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://vercel.com&size=256">
+  Deployments and hosting.
+</Card>
+<Card title="Render" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://render.com&size=256">
+  Cloud application hosting.
+</Card>
+<Card title="Argo CD" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://argoproj.github.io&size=256">
+  GitOps continuous delivery for Kubernetes.
+</Card>
 </CardGroup>
 
 ## Incident Management
 
-<CardGroup cols={2}>
-
-<Card title="PagerDuty" icon="pager" href="/integrations/pagerduty">
-  Connect incidents, services, and on-call schedules from PagerDuty.
+<CardGroup cols={3}>
+<Card title="PagerDuty" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://pagerduty.com&size=256" href="/integrations/pagerduty">
+  Incidents, services, and on-call schedules.
 </Card>
-
-<Card title="Incident.io" icon="bell" href="/integrations/incident-io">
-  Pull incident data and schedules from Incident.io.
+<Card title="Incident.io" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://incident.io&size=256" href="/integrations/incident-io">
+  Incident data and schedules.
 </Card>
+<Card title="Rootly" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://rootly.com&size=256">
+  Incident management and response.
+</Card>
+<Card title="iLert" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://ilert.com&size=256">
+  Alerting and incident management.
+</Card>
+<Card title="OneUptime" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://oneuptime.com&size=256">
+  Monitoring and incident management.
+</Card>
+</CardGroup>
 
+## CI/CD
+
+<CardGroup cols={3}>
+<Card title="Buildkite" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://buildkite.com&size=256">
+  Pipelines, builds, and deployments.
+</Card>
+<Card title="CircleCI" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://circleci.com&size=256">
+  Continuous integration and delivery.
+</Card>
+<Card title="LaunchDarkly" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://launchdarkly.com&size=256">
+  Feature flags and experimentation.
+</Card>
+</CardGroup>
+
+## Project Management
+
+<CardGroup cols={3}>
+<Card title="Linear" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://linear.app&size=256">
+  Issue tracking and project management.
+</Card>
+<Card title="Asana" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://asana.com&size=256">
+  Task management and project tracking.
+</Card>
+<Card title="Atlassian" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://atlassian.com&size=256">
+  Jira issues and project management.
+</Card>
+<Card title="ClickUp" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://clickup.com&size=256">
+  Tasks, docs, and project management.
+</Card>
+<Card title="Shortcut" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://shortcut.com&size=256">
+  Project management for software teams.
+</Card>
+</CardGroup>
+
+## Security
+
+<CardGroup cols={3}>
+<Card title="CrowdStrike" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://crowdstrike.com&size=256">
+  Endpoint security and threat intelligence.
+</Card>
+</CardGroup>
+
+## Databases
+
+<CardGroup cols={3}>
+<Card title="MongoDB Atlas" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://mongodb.com&size=256">
+  Queries, schemas, and aggregations.
+</Card>
+<Card title="Supabase" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://supabase.com&size=256">
+  Database management, migrations, and auth.
+</Card>
+<Card title="Elasticsearch" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://elastic.co&size=256">
+  Search and analyze indices.
+</Card>
+<Card title="PlanetScale" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://planetscale.com&size=256">
+  MySQL database queries.
+</Card>
+<Card title="Neon" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://neon.tech&size=256">
+  Serverless Postgres.
+</Card>
+<Card title="Upstash" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://upstash.com&size=256">
+  Serverless Redis and Kafka.
+</Card>
+<Card title="Aiven" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://aiven.io&size=256">
+  Managed PostgreSQL, Kafka, and ClickHouse.
+</Card>
+<Card title="Confluent" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://confluent.io&size=256">
+  Kafka topics, connectors, and schemas.
+</Card>
+</CardGroup>
+
+## Source Control
+
+<CardGroup cols={3}>
+<Card title="GitHub" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://github.com&size=256" href="/integrations/github">
+  Repositories, pull requests, and CI/CD pipelines.
+</Card>
+</CardGroup>
+
+## Chat
+
+<CardGroup cols={3}>
+<Card title="Slack" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://slack.com&size=256" href="/integrations/slack">
+  Investigate alerts in real time via the Antimetal Slackbot.
+</Card>
+<Card title="Zendesk" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://zendesk.com&size=256">
+  Customer support tickets and conversations.
+</Card>
+</CardGroup>
+
+## Developer Tools
+
+<CardGroup cols={3}>
+<Card title="Notion" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://notion.so&size=256">
+  Pages, databases, and content.
+</Card>
+<Card title="Confluence" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://atlassian.com/software/confluence&size=256">
+  Enterprise knowledge base.
+</Card>
+<Card title="Jam" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://jam.dev&size=256">
+  Debug recordings with video and logs.
+</Card>
+<Card title="Fireflies" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://fireflies.ai&size=256">
+  Meeting transcripts and summaries.
+</Card>
+<Card title="Cortex" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://cortex.io&size=256">
+  Service catalog and scorecards.
+</Card>
+<Card title="OpsLevel" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://opslevel.com&size=256">
+  Service ownership and maturity.
+</Card>
+<Card title="Customer.io" icon="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://customer.io&size=256">
+  Customer messaging and campaigns.
+</Card>
 </CardGroup>
 
 ## All integrations
 
-For the full list of supported integrations, visit [antimetal.com/integrations](https://antimetal.com/integrations).
+For the full list, visit [antimetal.com/integrations](https://antimetal.com/integrations).

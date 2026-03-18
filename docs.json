@@ -33,15 +33,40 @@
             "group": "Integrations",
             "pages": [
               "integrations/overview",
-              "integrations/slack",
-              "integrations/github",
-              "integrations/cloudwatch",
-              "integrations/gcp",
-              "integrations/datadog",
-              "integrations/grafana-cloud",
-              "integrations/sentry",
-              "integrations/pagerduty",
-              "integrations/incident-io"
+              {
+                "group": "Monitoring & Observability",
+                "pages": [
+                  "integrations/datadog",
+                  "integrations/grafana-cloud",
+                  "integrations/sentry"
+                ]
+              },
+              {
+                "group": "Cloud & Infrastructure",
+                "pages": [
+                  "integrations/cloudwatch",
+                  "integrations/gcp"
+                ]
+              },
+              {
+                "group": "Incident Management",
+                "pages": [
+                  "integrations/pagerduty",
+                  "integrations/incident-io"
+                ]
+              },
+              {
+                "group": "Source Control",
+                "pages": [
+                  "integrations/github"
+                ]
+              },
+              {
+                "group": "Chat",
+                "pages": [
+                  "integrations/slack"
+                ]
+              }
             ]
           },
           {
