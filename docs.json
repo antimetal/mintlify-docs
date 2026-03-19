@@ -94,8 +94,7 @@
   },
   "logo": {
     "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg",
-    "width": 50
+    "dark": "/logo/dark.svg"
   },
   "navbar": {
     "links": [
