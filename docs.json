@@ -84,15 +84,7 @@
         }
       }
     ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Blog",
-          "href": "https://antimetal.com/resources/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
+    "global": {}
   },
   "logo": {
     "light": "/logo/light.svg",
