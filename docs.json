@@ -27,7 +27,7 @@
         "groups": [
           {
             "group": "Getting started",
-            "pages": ["index", "mcp"]
+            "pages": ["index", "connect"]
           },
           {
             "group": "Integrations",
