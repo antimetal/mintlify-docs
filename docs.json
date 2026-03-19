@@ -76,6 +76,12 @@
             ]
           },
           {
+            "group": "Product Guide",
+            "pages": [
+              "product/issue-lifecycle"
+            ]
+          },
+          {
             "group": "Admin",
             "pages": [
               "admin/security"

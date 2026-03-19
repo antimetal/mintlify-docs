@@ -1,0 +1,85 @@
+---
+title: "Issue Lifecycle"
+description: "How issues move from alert to resolution in Antimetal"
+---
+
+Issues are the core unit of work in Antimetal. Each issue represents something worth investigating: an alert from your monitoring stack, something Antimetal surfaced on its own, or a question you asked directly.
+
+## How issues get created
+
+**From alerts.** When an alert fires in a connected platform (Datadog, Sentry, PagerDuty, CloudWatch, etc.), Antimetal creates an issue and begins investigating automatically.
+
+**From search.** Ask anything about your infrastructure, services, or systems and kick off an investigation from what you find.
+
+**From chat.** Describe a problem directly in Antimetal to create an issue and start an investigation.
+
+Multiple alerts can map to the same issue. Antimetal groups related signals together.
+
+## Issue statuses
+
+| Status | What it means |
+|--------|--------------|
+| **Investigating** | Antimetal is actively gathering evidence and building a root cause analysis. Default state when an issue is created. |
+| **Ready to fix** | Investigation complete. Root cause, findings, and remediation steps are available. |
+| **Resolved** | Marked as fixed by your team. |
+| **Muted** | Acknowledged but deprioritized. If a new alert fires for a muted issue, it will reopen. |
+
+Antimetal automatically moves issues from **Investigating** to **Ready to fix** when the investigation completes. Resolved and Muted are set manually.
+
+## Managing issues
+
+The [issues board](https://overlook.antimetal.com/issues) is your control plane for managing all issues in one place. Issues are organized by status in a kanban view, and you can search and filter by status or environment.
+
+## The investigation
+
+Antimetal runs an automated investigation:
+
+1. **Evidence collection.** Queries your connected platforms for logs, metrics, traces, events, and code relevant to the incident.
+
+2. **Causal analysis.** Analyzes collected evidence, builds hypotheses, and tests them against the data.
+
+3. **Root cause report.** Produces a summary of what's happening, why, and the supporting findings.
+
+4. **Remediation.** Generates immediate fixes to get your systems back up, long-term root cause fixes, and preventative recommendations.
+
+5. **Causal tree.** Builds a visual graph showing how issues propagate through your system.
+
+You can follow the entire investigation live on the **Steps** tab, watching agent actions, queries, and proposed fixes as they happen in real time.
+
+## Chat
+
+Chat is always available on any issue. You can ask Antimetal questions about the issue, how it relates to other issues, provide additional context, or direct the investigation.
+
+## Answers
+
+The primary view once an investigation completes.
+
+- **What's happening.** Plain-language summary of the incident.
+- **Root cause.** The identified cause with an explanation of why it's happening.
+- **Findings.** Individual pieces of evidence discovered during the investigation. Each finding links to the underlying data in your provider. Findings are categorized as cause, symptom, or ruled out.
+
+The investigation also shows how many potential causes were ruled out.
+
+## Fixes
+
+Remediation actions grouped into three categories:
+
+- **Immediate.** Steps to stabilize the situation now.
+- **Root cause.** Changes that fix the underlying problem.
+- **Preventative.** Improvements to avoid recurrence.
+
+Each action can contain informational context, code changes with syntax highlighting, or CLI commands.
+
+## Steps
+
+A live view of the investigation's chain of thought. Each step is expandable, showing the full input and output: what Antimetal queried, what data came back, and how it reasoned about the evidence.
+
+## Causal Tree
+
+A visual graph showing how issues propagate through your system. Maps out which symptoms led to which causes, what was ruled out, and how everything connects.
+
+## Versions
+
+Each time an investigation is regenerated or new evidence meaningfully changes the analysis, Antimetal creates a new version with a summary of what changed. You can switch between versions to see how the analysis evolved.
+
+<Snippet file="need-help.mdx" />
