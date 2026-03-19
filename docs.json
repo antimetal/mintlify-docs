@@ -1,6 +1,9 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
+  "custom": {
+    "css": "/custom.css"
+  },
   "name": "Antimetal Docs",
   "colors": {
     "primary": "#000000",
@@ -19,7 +22,10 @@
       "format": "woff2"
     }
   },
-  "favicon": "/favicon.png",
+  "favicon": {
+    "light": "/favicon-light.png",
+    "dark": "/favicon-dark.png"
+  },
   "navigation": {
     "tabs": [
       {
@@ -88,7 +94,8 @@
   },
   "logo": {
     "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "dark": "/logo/dark.svg",
+    "width": 50
   },
   "navbar": {
     "links": [
