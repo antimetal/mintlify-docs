@@ -20,12 +20,12 @@ This guide walks you through setting up an IAM Role with CloudWatch access to en
 
 <Steps>
 
-<Step title="Open the CloudFormation quick create link">
-  Navigate to the following link in your AWS account: [Launch Antimetal CloudFormation Stack](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?stackName=AntimetalCloudWatchIntegration&templateURL=https://antimetal-cloudformation-templates.s3.amazonaws.com/antimetal-cloudwatch-role.yaml&param_TrustedAccountId=379240662884)
+<Step title="Open the CloudWatch integration page in Antimetal">
+  Navigate to **Integrations > CloudWatch > Connect** in the Antimetal dashboard, or use the link above. Antimetal generates a unique External ID for your organization automatically.
 </Step>
 
-<Step title="Provide the External ID">
-  Enter the External ID shown in the Antimetal UI (or provided by the Antimetal team).
+<Step title="Deploy the CloudFormation stack">
+  Click **Deploy Stack in AWS**. This opens the CloudFormation quick-create page with the External ID and Trusted Account ID pre-filled in the template parameters.
 </Step>
 
 <Step title="(Optional) Exclude specific log groups">
@@ -38,20 +38,12 @@ This guide walks you through setting up an IAM Role with CloudWatch access to en
   Scroll to the bottom and check the box confirming that the stack may create IAM resources.
 </Step>
 
-<Step title="Create the stack">
-  Click **Create stack** and wait until the status shows `CREATE_COMPLETE`.
+<Step title="Create the stack and copy the Role ARN">
+  Click **Create stack** and wait until the status shows `CREATE_COMPLETE`. Then go to the **Outputs** tab and copy the **Value** next to **AntimetalReadOnlyRole** — this is the Role ARN you'll paste into Antimetal.
 </Step>
 
-<Step title="Find the IAM Role">
-  In the stack's outputs, click on **AntimetalReadOnlyRole**. This will open the role in the IAM console.
-</Step>
-
-<Step title="Copy the Role ARN">
-  On the IAM Role page, copy the **Role ARN**.
-</Step>
-
-<Step title="Share the Role ARN with Antimetal">
-  Paste the Role ARN into the Antimetal UI where requested.
+<Step title="Complete setup in Antimetal">
+  Back in the Antimetal dashboard, paste the Role ARN, select your AWS region, and click **Add**. The External ID is pre-filled automatically.
 </Step>
 
 </Steps>
