@@ -1,0 +1,61 @@
+---
+title: "Vercel"
+description: "Connect your Vercel account to Antimetal for deployment monitoring and runtime log analysis"
+---
+
+## Overview
+
+This guide walks you through connecting your Vercel account to Antimetal. Once connected, Antimetal can monitor your deployments, analyze build logs, and investigate runtime errors across all your Vercel projects.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/vercel">
+  Go to the Vercel integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- A Vercel account with permissions to create access tokens
+- If using Vercel Teams, your team slug (found in your team's URL: `vercel.com/<team-slug>`)
+
+## Setup
+
+<Steps>
+
+<Step title="Create a Vercel access token">
+  Go to [Vercel Access Tokens](https://vercel.com/account/settings/tokens) and click **Create**.
+
+  - **Token Name**: `Antimetal`
+  - **Scope**: Select **Full Account** to allow Antimetal to access all teams and projects, or scope to a specific team
+  - **Expiration**: Choose an expiration that fits your security policy
+
+  <Warning>Save the token securely — it won't be shown again.</Warning>
+</Step>
+
+<Step title="Enter the token in Antimetal">
+  Paste your access token in the Antimetal dashboard integration page.
+</Step>
+
+<Step title="Enter your team slug (optional)">
+  We recommend entering your Vercel team slug to scope queries to the right team. This is the value in your team's URL: `vercel.com/<team-slug>`.
+</Step>
+
+</Steps>
+
+## What Antimetal Can Access
+
+Once connected, Antimetal can:
+
+- **List teams** — Discover all Vercel teams associated with your account
+- **List projects** — Browse projects within a team
+- **Get project details** — View project configuration and settings
+- **List deployments** — Track deployment history and find failures
+- **Get deployment details** — Investigate individual deployment status and metadata
+- **Retrieve build logs** — Debug why deployments failed during the build step
+- **Query runtime logs** — Search and filter production runtime logs by status code, source, time range, and more
+
+## Permissions and Access
+
+Antimetal uses your access token for **read-only** operations. No deployments are triggered, no settings are modified, and no data is written to your Vercel account.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />

@@ -51,7 +51,8 @@
                 "group": "Cloud and Infrastructure",
                 "pages": [
                   "integrations/cloudwatch",
-                  "integrations/gcp"
+                  "integrations/gcp",
+                  "integrations/vercel"
                 ]
               },
               {
