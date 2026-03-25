@@ -80,7 +80,8 @@
             "group": "Product Guide",
             "pages": [
               "product/search",
-              "product/issue-lifecycle"
+              "product/issue-lifecycle",
+              "product/mcp"
             ]
           },
           {
