@@ -79,6 +79,7 @@
           {
             "group": "Product Guide",
             "pages": [
+              "product/search",
               "product/issue-lifecycle"
             ]
           },
