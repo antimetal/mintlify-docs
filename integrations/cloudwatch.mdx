@@ -23,7 +23,7 @@ This guide walks you through setting up an IAM Role with CloudWatch access to en
     Navigate to **Integrations \> CloudWatch \> Connect** in the Antimetal dashboard, or use the link above. Antimetal generates a unique External ID for your organization automatically.
   </Step>
   <Step title="Deploy the CloudFormation stack">
-    Click **Deploy Stack in AWS**. This opens the CloudFormation quick-create page with the External ID and Trusted Account ID pre-filled in the template parameters.
+    Click **Deploy Stack in AWS**. This opens the [CloudFormation quick-create page](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?stackName=AntimetalCloudWatchIntegration&templateURL=https://antimetal-cloudformation-templates.s3.amazonaws.com/antimetal-cloudwatch-role.yaml&param_TrustedAccountId=379240662884) with the External ID and Trusted Account ID pre-filled in the template parameters.
   </Step>
   <Step title="(Optional) Exclude specific log groups">
     To prevent Antimetal from accessing certain log groups, paste comma-separated log group ARNs in the **ExcludedLogGroups** field.
