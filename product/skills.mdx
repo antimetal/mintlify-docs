@@ -16,8 +16,8 @@ With the Skills integration, your AI tools can:
 
 ### Skills
 
-- **investigate** — Entry point for any software problem. Searches issues, queries Antimetal's AI, reads investigative reports and causal graphs, and routes to fix.
-- **fix** — Apply Antimetal's remediation to your codebase, adapted for your local environment.
+- **Investigate** — Entry point for any software problem. Searches issues, queries Antimetal's AI, reads investigative reports and causal graphs, and routes to fix.
+- **Fix** — Apply Antimetal's remediation to your codebase, adapted for your local environment.
 
 ### Rules
 
@@ -35,7 +35,7 @@ Make sure you've connected the platforms you want Antimetal to query. See [Integ
 
 <Step title="Get your API key">
 
-Generate an API key from the [Antimetal dashboard](https://overlook.antimetal.com).
+Generate an API key from the [Antimetal dashboard](https://overlook.antimetal.com/settings/api-keys).
 
 </Step>
 
@@ -44,19 +44,19 @@ Generate an API key from the [Antimetal dashboard](https://overlook.antimetal.co
 <Tabs>
   <Tab title="Claude Code">
     Within a Claude Code session, add the Antimetal marketplace:
-```
-    /plugin marketplace add antimetal/skills
+```bash
+/plugin marketplace add antimetal/skills
 ```
 
     Then install the plugin:
-```
-    /plugin install antimetal@antimetal-marketplace
+```bash
+/plugin install antimetal@antimetal-marketplace
 ```
   </Tab>
   <Tab title="Cursor">
     Install from the [Cursor Marketplace](https://cursor.com/marketplace) by searching for **Antimetal**, or use the command palette:
-```
-    /add-plugin antimetal
+```bash
+/add-plugin antimetal
 ```
   </Tab>
   <Tab title="Other clients">
@@ -75,9 +75,9 @@ Generate an API key from the [Antimetal dashboard](https://overlook.antimetal.co
 
 ## Example prompts
 ```
-Investigate issue #42
+Investigate the login latency spike from this morning
 What are the open high severity issues?
-Apply the remediation for issue #15
+Apply the remediation for the Redis connection timeout issue
 What services had the most errors last week?
 Triage my current incidents
 ```
