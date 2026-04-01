@@ -33,7 +33,7 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["index", "connect"]
+            "pages": ["index", "quick-start", "connect"]
           },
           {
             "group": "Integrations",
