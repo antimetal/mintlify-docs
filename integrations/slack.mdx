@@ -1,11 +1,14 @@
 ---
 title: "Slack"
-description: "Install the Antimetal Slackbot in your workspace"
+description: "Investigate alerts and query your system directly from Slack"
 ---
 
 ## Overview
 
-The Antimetal Slackbot lives in your Slack channels and investigates alerts in real time, surfacing root causes and remediation steps.
+The Antimetal Slackbot connects to your alert channels and responds to incidents in real time. It works in two modes:
+
+- **Auto-investigations** — the bot automatically posts root cause analysis in the thread when an alert fires in a connected channel
+- **Manual investigations** — mention `@Antimetal` in any alert thread to trigger an on-demand investigation
 
 <Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/slack">
   Go to the Slack integration setup in the Antimetal dashboard.
@@ -14,29 +17,72 @@ The Antimetal Slackbot lives in your Slack channels and investigates alerts in r
 ## Prerequisites
 
 - A Slack workspace where you have permission to install apps
-- At least one alert channel (e.g., `#alerts`, `#oncall`) where Antimetal should operate
+- At least one alert channel (e.g. `#alerts`, `#oncall`) where the bot should operate
 
 ## Setup
 
 <Steps>
 
-<Step title="Install the Slackbot">
-  From the Antimetal dashboard, click **Connect Slack**. This redirects you to Slack to authorize the app in your workspace.
+<Step title="Connect Slack">
+  From the Antimetal dashboard, navigate to **Settings > Integrations** and click **Connect Slack**. You'll be redirected to Slack to authorize the app in your workspace.
+
+  {/* TODO: screenshot of the Connect Slack button in the dashboard */}
 </Step>
 
-<Step title="Add to alert channels">
-  Invite the Antimetal bot to the channels where your alerts land. You can do this by mentioning `@Antimetal` in each channel or by using Slack's channel settings.
+<Step title="Add the bot to your alert channels">
+  Invite `@Antimetal` to your alerts channel. The easiest way is to type the following in the channel:
+
+  ```bash
+  /invite @Antimetal
+  ```
+
+  You can also invite it from the channel's member settings.
+
+  {/* TODO: screenshot of the /invite command in Slack */}
 </Step>
 
-<Step title="Verify">
-  Trigger or replay a recent alert in one of your channels to confirm the bot is responding.
+<Step title="Verify the installation">
+  Once added, the bot will post a welcome message in the channel confirming it's active and ready to investigate alerts.
+
+  {/* TODO: screenshot of the bot's welcome message */}
 </Step>
 
 </Steps>
 
-## Permissions and Access
+## Triggering investigations
 
-The Antimetal Slackbot requests the following scopes:
+### Auto-investigations
+
+Auto-investigations run automatically when an alert fires in a channel where `@Antimetal` is present. You enable them per alert, not per channel.
+
+<Steps>
+<Step title="Open Settings > Issues">
+  In the Antimetal dashboard, navigate to **Settings > Issues** and select the alert you want to automate.
+
+  {/* TODO: screenshot of Settings > Issues */}
+</Step>
+<Step title="Enable auto-investigate">
+  Toggle on **Auto-investigate** for that alert.
+
+  {/* TODO: screenshot of the auto-investigate toggle */}
+</Step>
+</Steps>
+
+When the alert fires, Antimetal will automatically trigger an investigation and post the results in the thread.
+
+### Manual investigations
+
+Reply to any alert thread with `@Antimetal` to trigger an on-demand investigation. The bot detects the mention and runs a root cause analysis on that alert.
+
+```bash
+@Antimetal
+```
+
+{/* TODO: screenshot of a manual @mention and bot reply in a thread */}
+
+## Permissions
+
+The Antimetal Slackbot requests the following OAuth scopes:
 
 | Scope | Purpose |
 |---|---|
@@ -57,8 +103,7 @@ The Antimetal Slackbot requests the following scopes:
 | `users:read` | View user profiles |
 | `users:read.email` | View user email addresses |
 
-- No access to DMs unless the bot is explicitly invited
-- Slack message content is not persisted. Lightweight metadata (alert identifiers, investigation status) may be temporarily retained for tracking.
+The bot has no access to channels it hasn't been explicitly invited to. Slack message content is not persisted — lightweight metadata (alert identifiers, investigation status) may be temporarily retained for tracking purposes.
 
 <Snippet file="security-note.mdx" />
 
