@@ -57,36 +57,29 @@
               },
               {
                 "group": "Incident Management",
-                "pages": [
-                  "integrations/pagerduty",
-                  "integrations/incident-io"
-                ]
+                "pages": ["integrations/pagerduty", "integrations/incident-io"]
               },
               {
                 "group": "Source Control",
-                "pages": [
-                  "integrations/github"
-                ]
+                "pages": ["integrations/github"]
               },
               {
                 "group": "Chat",
-                "pages": [
-                  "integrations/slack"
-                ]
+                "pages": ["integrations/slack"]
               }
             ]
           },
           {
             "group": "Product Guide",
             "pages": [
-              "product/issue-lifecycle"
+              "product/search",
+              "product/issue-lifecycle",
+              "product/skills"
             ]
           },
           {
             "group": "Admin",
-            "pages": [
-              "admin/security"
-            ]
+            "pages": ["admin/security"]
           }
         ]
       },

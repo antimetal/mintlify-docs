@@ -1,0 +1,85 @@
+---
+title: "Skills"
+description: "Use Antimetal directly from your AI coding tools"
+---
+
+Antimetal's plugin lets you interact with your infrastructure investigations, search, and issue management without leaving your AI coding tools. Any MCP-compatible client can connect.
+
+## What you can do
+
+With the Skills integration, your AI tools can:
+
+- **Search your infrastructure.** Run natural-language queries across all connected platforms, the same way [Search](/product/search) works in the Antimetal dashboard.
+- **Investigate issues.** Trigger and follow investigations with root cause analysis and remediation steps.
+- **Manage issues.** Create, view, and update [issues](/product/issue-lifecycle) directly from your editor or terminal.
+- **Query your data.** Pull logs, metrics, traces, and events from your connected integrations.
+
+### Skills
+
+- **Investigate** — Entry point for any software problem. Searches issues, queries Antimetal's AI, reads investigative reports and causal graphs, and routes to fix.
+- **Fix** — Apply Antimetal's remediation to your codebase, adapted for your local environment.
+
+### Rules
+
+- **antimetal-conventions** — Conventions for working with Antimetal data (artifact ID formats, status values, etc.)
+
+## Getting set up
+
+<Steps>
+
+<Step title="Connect your integrations">
+
+Make sure you've connected the platforms you want Antimetal to query. See [Integrations](/integrations/overview) for the full list.
+
+</Step>
+
+<Step title="Get your API key">
+
+Generate an API key from the [Antimetal dashboard](https://overlook.antimetal.com/settings/api-keys).
+
+</Step>
+
+<Step title="Install the plugin">
+
+<Tabs>
+  <Tab title="Claude Code">
+    Within a Claude Code session, add the Antimetal marketplace:
+```bash
+/plugin marketplace add antimetal/skills
+```
+
+    Then install the plugin:
+```bash
+/plugin install antimetal@antimetal-marketplace
+```
+  </Tab>
+  <Tab title="Cursor">
+    Install from the [Cursor Marketplace](https://cursor.com/marketplace) by searching for **Antimetal**, or use the command palette:
+```bash
+/add-plugin antimetal
+```
+  </Tab>
+  <Tab title="Other clients">
+    Antimetal's MCP server is available at `https://mcp.antimetal.com`. See the [setup instructions](/connect) for configuration specific to your client:
+
+    - [VS Code](/connect#vs-code)
+    - [Claude Desktop](/connect#claude-desktop)
+    - [Windsurf](/connect#windsurf)
+    - [Codex](/connect#codex)
+  </Tab>
+</Tabs>
+
+</Step>
+
+</Steps>
+
+## Example prompts
+```
+Investigate the login latency spike from this morning
+What are the open high severity issues?
+Apply the remediation for the Redis connection timeout issue
+What services had the most errors last week?
+Triage my current incidents
+```
+
+<Snippet file="need-help.mdx" />
