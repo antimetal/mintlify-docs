@@ -5,14 +5,27 @@ description: "Investigate alerts and query your system directly from Slack"
 
 ## Overview
 
-The Antimetal Slackbot connects to your alert channels and responds to incidents in real time. It works in two modes:
+The Antimetal Slackbot connects to your Slack workspace and responds to infrastructure alerts in real time. Once installed, you invite the bot to your alert channels — from there, it monitors incoming alerts and posts root cause analysis automatically or on demand.
 
-- **Auto-investigations** — the bot automatically posts root cause analysis in the thread when an alert fires in a connected channel
-- **Manual investigations** — mention `@Antimetal` in any alert thread to trigger an on-demand investigation
+**What the integration does:**
 
-<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/slack">
-  Go to the Slack integration setup in the Antimetal dashboard.
+- **Auto-investigations** — when an alert fires in a connected channel, the bot automatically analyzes the root cause and posts findings in the alert thread
+- **Manual investigations** — mention `@Antimetal` in any alert thread to trigger an on-demand investigation at any time
+- **Remediation guidance** — each investigation includes suggested fixes for the identified problem
+
+<Warning>
+  Antimetal uses AI to generate investigation summaries and remediation suggestions. AI-generated responses may occasionally be inaccurate or incomplete. Always verify suggested actions before applying them to production systems.
+</Warning>
+
+## Install
+
+To add Antimetal to your Slack workspace, go to the Slack integration page in the Antimetal dashboard and click **Connect Slack**:
+
+<Card title="Add Antimetal to Slack" icon="slack" href="https://overlook.antimetal.com/integrations/slack">
+  Connect your Slack workspace from the Antimetal dashboard.
 </Card>
+
+You'll be redirected to Slack to authorize the app. Once authorized, return to the dashboard to complete setup.
 
 ## Prerequisites
 
@@ -107,4 +120,6 @@ The bot has no access to channels it hasn't been explicitly invited to. Slack me
 
 <Snippet file="security-note.mdx" />
 
-<Snippet file="need-help.mdx" />
+## Support
+
+If you run into any issues with the Antimetal Slack integration, contact us directly at [support@antimetal.com](mailto:support@antimetal.com). We're here to help with installation, configuration, or anything else.
