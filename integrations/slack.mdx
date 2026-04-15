@@ -1,49 +1,35 @@
 ---
 title: "Slack"
-description: "Investigate alerts and query your system directly from Slack"
+description: "Investigate alerts and get weekly digests, directly in Slack"
 ---
 
 ## Overview
 
-The Antimetal Slackbot connects to your Slack workspace and responds to infrastructure alerts in real time. Once installed, you invite the bot to your alert channels — from there, it monitors incoming alerts and posts root cause analysis automatically or on demand.
+The Antimetal Slackbot connects to your Slack workspace and works in two ways:
 
-**What the integration does:**
+- **Investigations** — when an alert fires in a connected channel, Antimetal posts a root cause analysis automatically or on demand, with suggested fixes
+- **Weekly digest** — every Monday, Antimetal posts a plain-language recap of last week's alerts to a channel of your choice
 
-- **Auto-investigations** — when an alert fires in a connected channel, the bot automatically analyzes the root cause and posts findings in the alert thread
-- **Manual investigations** — mention `@Antimetal` in any alert thread to trigger an on-demand investigation at any time
-- **Remediation guidance** — each investigation includes suggested fixes for the identified problem
-
-<Warning>
-  Antimetal uses AI to generate investigation summaries and remediation suggestions. AI-generated responses may occasionally be inaccurate or incomplete. Always verify suggested actions before applying them to production systems.
-</Warning>
-
-## Install
-
-To add Antimetal to your Slack workspace, go to the Slack integration page in the Antimetal dashboard and click **Connect Slack**:
-
-<Card title="Add Antimetal to Slack" icon="slack" href="https://overlook.antimetal.com/integrations/slack">
-  Connect your Slack workspace from the Antimetal dashboard.
-</Card>
-
-You'll be redirected to Slack to authorize the app. Once authorized, return to the dashboard to complete setup.
-
-## Prerequisites
-
-- A Slack workspace where you have permission to install apps
-- At least one alert channel (e.g. `#alerts`, `#oncall`) where the bot should operate
+<Note>
+  AI-generated responses may occasionally be inaccurate or incomplete. Always verify suggested actions before applying them to production systems.
+</Note>
 
 ## Setup
+
+**Prerequisites:** A Slack workspace where you have permission to install apps, and at least one alert channel where the bot should operate.
 
 <Steps>
 
 <Step title="Connect Slack">
   From the Antimetal dashboard, navigate to **Settings > Integrations** and click **Connect Slack**. You'll be redirected to Slack to authorize the app in your workspace.
 
-  {/* TODO: screenshot of the Connect Slack button in the dashboard */}
+  <Card title="Add Antimetal to Slack" icon="slack" href="https://overlook.antimetal.com/integrations/slack">
+    Connect your Slack workspace from the Antimetal dashboard.
+  </Card>
 </Step>
 
 <Step title="Add the bot to your alert channels">
-  Invite `@Antimetal` to your alerts channel. The easiest way is to type the following in the channel:
+  Invite `@Antimetal` to your alerts channel:
 
   ```bash
   /invite @Antimetal
@@ -62,7 +48,7 @@ You'll be redirected to Slack to authorize the app. Once authorized, return to t
 
 </Steps>
 
-## Triggering investigations
+## Investigations
 
 ### Auto-investigations
 
@@ -87,11 +73,30 @@ When the alert fires, Antimetal will automatically trigger an investigation and 
 
 Reply to any alert thread with `@Antimetal` to trigger an on-demand investigation. The bot detects the mention and runs a root cause analysis on that alert.
 
-```bash
+```
 @Antimetal
 ```
 
 {/* TODO: screenshot of a manual @mention and bot reply in a thread */}
+
+## Weekly digest
+
+Antimetal reads every alert from the past week, clusters related issues together, and surfaces what's actually impacting users — a high-level overview delivered to a channel of your choice every Monday at 9 AM.
+
+To enable it, run this in the channel where you want digests delivered:
+
+```
+@Antimetal digest setup
+```
+
+Antimetal confirms the channel and schedule, then posts an immediate first digest.
+
+| Command | What it does |
+|---------|-------------|
+| `@Antimetal digest setup` | Enables the digest and sets delivery to this channel. Run again in a different channel to move it. |
+| `@Antimetal digest off` | Disables the weekly digest. |
+| `@Antimetal digest status` | Shows the current delivery channel and schedule. |
+| `@Antimetal digest run` | Triggers an immediate one-off digest for the past 7 days. |
 
 ## Permissions
 
