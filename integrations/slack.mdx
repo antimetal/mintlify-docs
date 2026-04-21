@@ -104,6 +104,7 @@ Antimetal confirms the delivery channel and the recurring schedule. The first di
 | `/digest` | Shows whether the digest is configured and, when it is, lists the commands available to you. |
 | `/digest setup` | Sets the current channel as the delivery destination and turns on the weekly schedule. Run again in a different channel to move the destination. |
 | `/digest run` | Triggers an immediate one-off digest for the past 7 days. Posts to the configured delivery channel. |
+| `/digest off` | Stops the weekly schedule and removes the delivery channel. Run `/digest setup` in any channel to re-enable. |
 
 All responses are ephemeral. Only the user who ran the command sees the acknowledgement. The digest itself posts publicly to the configured delivery channel.
 
