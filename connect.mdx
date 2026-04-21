@@ -9,37 +9,13 @@ Antimetal exposes a remote MCP server at `https://mcp.antimetal.com` that any MC
 Before connecting, make sure you've [set up your integrations](/integrations/overview) so Antimetal has access to your infrastructure and observability data.
 </Note>
 
-You'll need an API key from the [Antimetal dashboard](https://overlook.antimetal.com). Add the server to your client using the configuration below.
+<Note>
+For Claude Code and Cursor, install the [Antimetal Skills plugin](/product/skills) instead — it bundles the MCP server with pre-built investigation and fix workflows.
+</Note>
+
+For other clients, add the server using the configuration below. All of these clients support OAuth for remote MCP and will prompt you to log in on first use. You can also generate an API key from the [Antimetal dashboard](https://overlook.antimetal.com/settings/api-keys) and use it as a bearer token if you prefer.
 
 <Tabs>
-
-<Tab title="Claude Code">
-
-```bash
-claude mcp add antimetal --transport http https://mcp.antimetal.com -- --header "Authorization: Bearer $ANTIMETAL_API_KEY"
-```
-
-</Tab>
-
-<Tab title="Cursor">
-
-Add the following to your Cursor MCP settings (`.cursor/mcp.json`):
-
-```json
-{
-  "mcpServers": {
-    "antimetal": {
-      "type": "http",
-      "url": "https://mcp.antimetal.com",
-      "headers": {
-        "Authorization": "Bearer ${ANTIMETAL_API_KEY}"
-      }
-    }
-  }
-}
-```
-
-</Tab>
 
 <Tab title="VS Code">
 
