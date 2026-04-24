@@ -5,7 +5,7 @@ description: "Create an Entra service principal for Antimetal monitoring"
 
 ## Overview
 
-This guide walks you through creating a Microsoft Entra service principal to enable the Antimetal integration for inspecting Azure resources (App Service, SQL, Storage, Service Bus, Functions, AKS, Cosmos, and more) and querying Log Analytics, Azure Monitor metrics, and the Activity Log across your subscriptions.
+This guide walks you through creating a Microsoft Entra service principal to enable the Antimetal integration for Azure. Once connected, Antimetal can investigate incidents across App Service, Azure SQL (Database, Elastic Pool, and Managed Instance), Storage, Service Bus, Function Apps, AKS, Container Apps, Cosmos DB, MySQL, PostgreSQL, Redis, Event Hubs, Data Explorer, and Application Insights. It queries Log Analytics (KQL), Azure Monitor metrics, Resource Health, and the Activity Log to correlate symptoms with configuration changes and deployment events.
 
 <Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/mcp-connect?server=azure">
   Go to the Azure integration setup in the Antimetal dashboard.
@@ -101,10 +101,12 @@ Antimetal uses a read-only service principal scoped to the subscriptions you sel
 
 | Role | Scope | Access |
 |---|---|---|
-| [Reader](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/general#reader) | Selected subscriptions | Read-only access to resource metadata, Azure Monitor metrics, Log Analytics, and Activity Log |
+| [Reader](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/general#reader) | Selected subscriptions | Standard Azure built-in role. Grants `*/read` across the subscription — view all resources and their configuration, but no data-plane access (no Key Vault secrets, no Storage blob contents, no database rows) and no mutations. |
+
+Antimetal uses this access to list resources, read configuration and deployment state, query Azure Monitor metrics and Log Analytics (KQL), and read the Activity Log. Queries against databases (SQL, Cosmos, MySQL, PostgreSQL, Data Explorer) and Storage blob contents are only available if you separately grant the corresponding data-plane roles — Reader alone does not enable them.
 
 <Note>
-  If a Log Analytics workspace is configured with [workspace-level access control mode](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/manage-access#access-control-mode), you may need to additionally assign the **Log Analytics Reader** role at the workspace level for log queries.
+  If a Log Analytics workspace uses [workspace-level access control mode](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/manage-access#access-control-mode) (default for workspaces created before March 2019), additionally assign the **Log Analytics Reader** role at the workspace level. Workspaces created after March 2019 default to resource-context mode and do not require this.
 </Note>
 
 Credentials are stored encrypted and rotated per your Entra app's secret expiration policy. Revoke access at any time by deleting the `antimetal-monitoring` app registration or removing its role assignments.
