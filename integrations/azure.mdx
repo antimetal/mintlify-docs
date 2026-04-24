@@ -1,0 +1,114 @@
+---
+title: "Azure"
+description: "Create an Entra service principal for Antimetal monitoring"
+---
+
+## Overview
+
+This guide walks you through creating a Microsoft Entra service principal to enable the Antimetal integration for inspecting Azure resources (App Service, SQL, Storage, Service Bus, Functions, AKS, Cosmos, and more) and querying Log Analytics, Azure Monitor metrics, and the Activity Log across your subscriptions.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/mcp-connect?server=azure">
+  Go to the Azure integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- An Azure subscription you want to monitor
+- Permission to register applications in Microsoft Entra ID
+- Permission to assign roles on the target subscription (Owner or User Access Administrator)
+
+## Setup
+
+<Tabs>
+<Tab title="Azure Portal">
+
+<Steps>
+
+<Step title="Register an application in Entra ID">
+  1. Go to the [Azure Portal](https://portal.azure.com)
+  2. Navigate to **Microsoft Entra ID > App registrations**
+  3. Click **+ New registration**
+  4. Fill in:
+     - **Name:** `antimetal-monitoring`
+     - **Supported account types:** Accounts in this organizational directory only
+  5. Click **Register**
+  6. On the overview page, copy the **Application (client) ID** and **Directory (tenant) ID**
+</Step>
+
+<Step title="Create a client secret">
+  1. In the app registration, go to **Certificates & secrets**
+  2. Click **+ New client secret**, set a description and expiration
+  3. Click **Add**
+  4. Copy the secret **Value** immediately
+
+  <Warning>The secret value is only shown once. Copy it before leaving the page.</Warning>
+</Step>
+
+<Step title="Assign the Reader role on your subscription">
+  For each subscription you want to monitor:
+
+  1. Navigate to **Subscriptions** and open the target subscription
+  2. Go to **Access control (IAM)**
+  3. Click **+ Add > Add role assignment**
+  4. Select the **Reader** role, then click **Next**
+  5. Under **Members**, select **User, group, or service principal**, click **+ Select members**
+  6. Search for `antimetal-monitoring`, select it, click **Select**
+  7. Click **Review + assign**, then **Review + assign** again to confirm
+  8. Copy the **Subscription ID** from the subscription overview
+</Step>
+
+</Steps>
+
+</Tab>
+<Tab title="Azure CLI">
+
+<Steps>
+
+<Step title="Create the service principal and assign Reader">
+  ```bash
+  az ad sp create-for-rbac \
+    --name antimetal-monitoring \
+    --role Reader \
+    --scopes /subscriptions/<SUBSCRIPTION_ID>
+  ```
+
+  Output includes `appId` (client ID), `password` (client secret), and `tenant`. Save these values.
+</Step>
+
+<Step title="Assign Reader to additional subscriptions (optional)">
+  ```bash
+  az role assignment create \
+    --assignee <APP_ID> \
+    --role Reader \
+    --scope /subscriptions/<SUBSCRIPTION_ID>
+  ```
+</Step>
+
+</Steps>
+
+</Tab>
+</Tabs>
+
+### Configure the Antimetal integration
+
+1. Navigate to the Antimetal Azure integration page
+2. Paste the **Tenant ID**, **Client ID**, **Client Secret**, and (optional) default **Subscription ID**
+3. Click **Connect**
+
+## Permissions and Access
+
+Antimetal uses a read-only service principal scoped to the subscriptions you select. No write or data-plane operations are performed in your Azure environment.
+
+| Role | Scope | Access |
+|---|---|---|
+| [Reader](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/general#reader) | Selected subscriptions | Read-only access to resource metadata, Azure Monitor metrics, Log Analytics, and Activity Log |
+
+<Note>
+  If a Log Analytics workspace is configured with [workspace-level access control mode](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/manage-access#access-control-mode), you may need to additionally assign the **Log Analytics Reader** role at the workspace level for log queries.
+</Note>
+
+Credentials are stored encrypted and rotated per your Entra app's secret expiration policy. Revoke access at any time by deleting the `antimetal-monitoring` app registration or removing its role assignments.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />

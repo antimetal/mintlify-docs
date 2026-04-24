@@ -52,6 +52,7 @@
                 "pages": [
                   "integrations/cloudwatch",
                   "integrations/gcp",
+                  "integrations/azure",
                   "integrations/vercel"
                 ]
               },
@@ -62,6 +63,10 @@
               {
                 "group": "Source Control",
                 "pages": ["integrations/github"]
+              },
+              {
+                "group": "CI/CD",
+                "pages": ["integrations/azure-devops"]
               },
               {
                 "group": "Chat",

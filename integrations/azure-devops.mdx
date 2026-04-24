@@ -1,0 +1,86 @@
+---
+title: "Azure DevOps"
+description: "Create a read-only Personal Access Token for Antimetal"
+---
+
+## Overview
+
+This guide walks you through creating an Azure DevOps Personal Access Token (PAT) to enable the Antimetal integration for inspecting repositories, pull requests, work items, pipelines, wikis, and test plans.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/mcp-connect?server=azure-devops">
+  Go to the Azure DevOps integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- An Azure DevOps organization
+- Permission to create Personal Access Tokens
+- Access to the projects you want Antimetal to inspect
+
+## Setup
+
+<Steps>
+
+<Step title="Open Personal Access Tokens">
+  In Azure DevOps, click your profile icon (top right) and select **User Settings > Personal Access Tokens**.
+</Step>
+
+<Step title="Create a new token">
+  1. Click **+ New Token**
+  2. Fill in:
+     - **Name:** `Antimetal`
+     - **Organization:** the organization you want to connect
+     - **Expiration:** set according to your org's rotation policy
+  3. Under **Scopes**, select **Custom defined**
+</Step>
+
+<Step title="Grant read-only scopes">
+  Select **Read** access only for each of the following scopes. See Microsoft's [Personal Access Tokens guide](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) for full details.
+
+  - **Code** (Read)
+  - **Work Items** (Read)
+  - **Build** (Read)
+  - **Release** (Read)
+  - **Test Management** (Read)
+  - **Wiki** (Read)
+  - **Project and Team** (Read)
+
+  Do not enable any write, manage, or execute scopes.
+</Step>
+
+<Step title="Create and copy the token">
+  Click **Create**, then copy the token value.
+
+  <Warning>The token is only shown once. Copy it before leaving the page.</Warning>
+</Step>
+
+<Step title="Share the token with Antimetal">
+  In the Antimetal UI, paste:
+
+  - **Organization URL:** `https://dev.azure.com/<your-org>`
+  - **Personal Access Token:** the token you just created
+
+  Click **Connect**.
+</Step>
+
+</Steps>
+
+## Permissions and Access
+
+Antimetal uses a read-only PAT scoped to the permissions below. No write operations are performed in your Azure DevOps organization.
+
+| Scope | Access |
+|---|---|
+| Code | Read repositories, branches, pull requests, commits, file contents |
+| Work Items | Read work items, queries, iterations |
+| Build | Read build definitions, runs, logs, artifacts |
+| Release | Read release pipelines and runs |
+| Test Management | Read test plans, suites, and results |
+| Wiki | Read wiki pages and search |
+| Project and Team | Read project and team metadata |
+
+Tokens are stored encrypted. Revoke access at any time by deleting the token from **User Settings > Personal Access Tokens**.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />
