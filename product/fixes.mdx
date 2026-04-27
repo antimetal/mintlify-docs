@@ -1,0 +1,86 @@
+---
+title: "Fixes"
+description: "Review proposed remediation, run an immediate fix, or open a PR for a code change"
+---
+
+When an investigation finishes, Antimetal proposes one or more fixes on the **Fixes** tab of the issue. Antimetal does not apply fixes on your behalf. Every fix is a suggestion an engineer reviews and ships.
+
+<Frame>
+  <img src="/images/fixes/overview.png" alt="Fixes tab on an issue" />
+</Frame>
+
+## Fix categories
+
+| Category | What it is | What you do |
+|---|---|---|
+| **Immediate** | A small, low-risk change that stops the bleed: a monitor threshold, an alert config tweak, a runbook step. Comes with rationale and any code snippets or CLI commands you need. | Read the steps and run them yourself. Antimetal doesn't execute commands or change monitors. |
+| **Comprehensive** | A code change that addresses the root cause. Includes a generated diff. | Review the diff, then open a PR from Antimetal or pull the fix into your IDE or coding agent to keep editing. |
+
+Not every issue produces both. Antimetal only surfaces a category when the investigation supports it.
+
+## Immediate fixes
+
+Open an immediate fix to see the full plan: why the change is needed, then numbered steps with the exact commands to run.
+
+<Frame>
+  <img src="/images/fixes/immediate.png" alt="Immediate fix detail with numbered steps and a CLI snippet" />
+</Frame>
+
+Use the copy button on a code block to grab the snippet, then run it from your own terminal or admin console. Antimetal does not run CLI commands or hit provider APIs for you.
+
+## Comprehensive fixes
+
+Before generating a fix, the remediation agent reads your `AGENTS.md`, `CLAUDE.md`, and any Cursor or Copilot rules files in the repo, alongside Antimetal's memory of your system and past incidents. Fixes come back in your code style and follow your team's conventions.
+
+Antimetal does not run your tests or builds against the fix. Validate the change locally or in CI before merging.
+
+<Frame>
+  <img src="/images/fixes/diff.png" alt="Side-by-side diff viewer for a comprehensive fix" />
+</Frame>
+
+The action menu on a comprehensive fix gives you two paths: ship the PR (or a draft) straight from Antimetal, or take the fix to your own editor or coding agent.
+
+<Frame>
+  <img src="/images/fixes/action-menu.png" alt="Create PR action menu with Codex, Cursor, Devin, and GitHub Copilot options" />
+</Frame>
+
+**Ship from Antimetal**
+
+- **Create PR** opens a pull request on your repo, branching from the default branch. Requires the [GitHub integration](/integrations/github). Once it's open, treat it like any other PR: push more commits, rebase, or rewrite the diff.
+- **Create draft PR** does the same as a draft, so reviewers aren't pinged while you tighten things up. Mark it ready when it's where you want it.
+
+**Take it to your editor**
+
+- **Open in Codex / Cursor / Devin / GitHub Copilot** hands the fix and its context off directly so you can keep iterating in your editor.
+- **Copy fix as prompt** copies the fix and surrounding context as a prompt you can paste into any IDE or coding agent.
+
+### What an Antimetal PR looks like
+
+- The PR is authored by `antimetal[bot]`, so reviewers can tell at a glance the change came from an agent.
+- Antimetal tags any matching `CODEOWNERS` and also auto-tags engineers who have recently reviewed the impacted code.
+
+<Frame>
+  <img src="/images/fixes/pr-example.png" alt="Example Antimetal PR authored by antimetal[bot]" />
+</Frame>
+
+<Note>
+  🧪 **PR creation is experimental.** Engineers are responsible for validating every change before merging. Antimetal will never merge for you.
+</Note>
+
+### How to respond to an Antimetal PR
+
+When an Antimetal PR lands in your queue, you have four paths:
+
+- **Approve and merge** if the diff is correct as-is.
+- **Take it over the line** by adding commits, rebasing, or rewriting parts of the diff before merging.
+- **Request changes** if the approach is right but the diff isn't.
+- **Close as not relevant** if the underlying issue no longer applies or the agent misread the situation.
+
+Leave inline review comments on the diff and add any extra context you have. Feedback on the change, the approach, or what the agent missed all help Antimetal learn.
+
+## What Antimetal will and will not do today
+
+- Will: investigate, propose fixes, generate code changes, open PRs you trigger from the Fixes page (authored as `antimetal[bot]`), hand off to coding agents.
+- Will not: open branches or PRs unprompted, run CLI commands, change monitors or alerts, apply infrastructure changes, run your tests or builds, update the PR based on review feedback, push commits without you, or merge.
+
+<Snippet file="need-help.mdx" />

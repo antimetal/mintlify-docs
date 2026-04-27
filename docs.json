@@ -79,6 +79,7 @@
             "pages": [
               "product/search",
               "product/issue-lifecycle",
+              "product/fixes",
               "product/skills"
             ]
           },
