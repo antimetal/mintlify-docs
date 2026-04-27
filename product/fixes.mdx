@@ -3,7 +3,7 @@ title: "Fixes"
 description: "Review proposed remediation, run an immediate fix, or open a PR for a code change"
 ---
 
-When an investigation finishes, Antimetal proposes one or more fixes on the **Fixes** tab of the issue. Antimetal does not apply fixes on your behalf. Every fix is a suggestion an engineer reviews and ships.
+When an investigation finishes, Antimetal proposes one or more fixes on the **Fixes** tab of the issue. Antimetal does not apply fixes on your behalf. Every fix is a PR suggestion an engineer reviews and ships.
 
 <Frame>
   <img src="/images/fixes/overview.png" alt="Fixes tab on an issue" />
@@ -26,11 +26,11 @@ Open an immediate fix to see the full plan: why the change is needed, then numbe
   <img src="/images/fixes/immediate.png" alt="Immediate fix detail with numbered steps and a CLI snippet" />
 </Frame>
 
-Use the copy button on a code block to grab the snippet, then run it from your own terminal or admin console. Antimetal does not run CLI commands or hit provider APIs for you.
+Use the copy button on a code block to grab the snippet, then run it from your own terminal or admin console. You can also use the **Open in** menu at the top of the fix to send the full plan to your coding agent of choice. Antimetal does not run CLI commands or hit provider APIs for you.
 
 ## Comprehensive fixes
 
-Before generating a fix, the remediation agent reads your `AGENTS.md`, `CLAUDE.md`, and any Cursor or Copilot rules files in the repo, alongside Antimetal's memory of your system and past incidents. Fixes come back in your code style and follow your team's conventions.
+Before generating a fix, Antimetal reads your `AGENTS.md`, `CLAUDE.md`, and any Cursor or Copilot rules files in the repo, alongside its memory of your system and past incidents. Fixes come back in your code style and follow your team's conventions.
 
 Antimetal does not run your tests or builds against the fix. Validate the change locally or in CI before merging.
 
@@ -73,10 +73,8 @@ When an Antimetal PR lands in your queue, you have four paths:
 
 - **Approve and merge** if the diff is correct as-is.
 - **Take it over the line** by adding commits, rebasing, or rewriting parts of the diff before merging.
-- **Request changes** if the approach is right but the diff isn't.
+- **Request changes** if the approach is right but the diff isn't. Leave inline review comments and add any context you have — feedback on what's off or what the agent missed helps Antimetal learn.
 - **Close as not relevant** if the underlying issue no longer applies or the agent misread the situation.
-
-Leave inline review comments on the diff and add any extra context you have. Feedback on the change, the approach, or what the agent missed all help Antimetal learn.
 
 ## What Antimetal will and will not do today
 
