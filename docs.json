@@ -133,5 +133,10 @@
       "github": "https://github.com/antimetal",
       "linkedin": "https://www.linkedin.com/company/antimetal"
     }
+  },
+  "integrations": {
+    "gtm": {
+      "tagId": "GTM-PQ2NP8K6"
+    }
   }
 }
