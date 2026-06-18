@@ -1,0 +1,81 @@
+---
+title: "Victoria Metrics"
+description: "Connect VictoriaMetrics (self-hosted or Cloud) to Antimetal"
+---
+
+## Overview
+
+This guide walks you through connecting VictoriaMetrics to Antimetal. Antimetal runs a dedicated read-only connector that queries your instance using PromQL and MetricsQL.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/victoria-metrics">
+  Go to the Victoria Metrics integration setup in the Antimetal dashboard.
+</Card>
+
+## Setup
+
+Choose the tab that matches your deployment.
+
+<Tabs>
+
+<Tab title="Self-Hosted">
+
+<Note>
+A self-hosted instance usually lives inside your own network. Before connecting, review [Self-Hosted Observability](/integrations/self-hosted-observability) to make it reachable by Antimetal.
+</Note>
+
+### Prerequisites
+
+- A running VictoriaMetrics instance, reachable over HTTPS from Antimetal
+- Whether your deployment is single-node or cluster
+- A read-only bearer token if your instance requires authentication
+
+<Steps>
+
+<Step title="Confirm your instance URL and type">
+  Note the base URL of your instance, for example `https://vm.internal.example.com`, and whether it runs as `single` or `cluster`.
+</Step>
+
+<Step title="Submit credentials to Antimetal">
+  | Field | Value |
+  |-------|-------|
+  | **VictoriaMetrics URL** | The base URL of your instance |
+  | **Instance Type** | `single` or `cluster` |
+  | **Bearer Token** | Read-only token (optional if the instance is unauthenticated) |
+</Step>
+
+</Steps>
+
+</Tab>
+
+<Tab title="VictoriaMetrics Cloud">
+
+### Prerequisites
+
+- A VictoriaMetrics Cloud account
+- An API key with read access
+
+<Steps>
+
+<Step title="Create a Cloud API key">
+  In the VictoriaMetrics Cloud console, create an API key with read access.
+</Step>
+
+<Step title="Submit it to Antimetal">
+  Provide the **Cloud API Key** in the Antimetal UI. No instance URL is required in Cloud mode.
+</Step>
+
+</Steps>
+
+</Tab>
+
+</Tabs>
+
+VictoriaMetrics is Prometheus-compatible, so existing Prometheus queries work directly.
+
+## Permissions and Access
+
+Antimetal uses a read-only connector restricted to query and inspection tools (`query`, `query_range`, `labels`, `series`, `rules`, `alerts`, TSDB status, and, in Cloud, deployment and region inspection). No write operations are performed.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />
