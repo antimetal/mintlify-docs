@@ -1,0 +1,50 @@
+---
+title: "Victoria Logs"
+description: "Connect your VictoriaLogs instance to Antimetal"
+---
+
+## Overview
+
+This guide walks you through connecting a VictoriaLogs instance to Antimetal. Antimetal runs a dedicated read-only connector that queries your instance using LogsQL.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/victoria-logs">
+  Go to the Victoria Logs integration setup in the Antimetal dashboard.
+</Card>
+
+<Note>
+VictoriaLogs is self-hosted only today (Cloud support is on the VictoriaMetrics roadmap). It usually lives inside your own network, so before connecting, review [Self-Hosted Observability](/integrations/self-hosted-observability) to make it reachable by Antimetal.
+</Note>
+
+## Prerequisites
+
+- A running VictoriaLogs instance, reachable over HTTPS from Antimetal
+- A read-only bearer token if your instance requires authentication
+
+## Setup
+
+<Steps>
+
+<Step title="Confirm your instance URL">
+  Note the base URL of your VictoriaLogs instance, for example `https://vmlogs.internal.example.com`.
+</Step>
+
+<Step title="Create a read-only token (if applicable)">
+  If your instance is protected, provision a bearer token scoped to read-only query access.
+</Step>
+
+<Step title="Submit credentials to Antimetal">
+  | Field | Value |
+  |-------|-------|
+  | **VictoriaLogs URL** | The base URL of your instance |
+  | **Bearer Token** | Read-only token (optional if the instance is unauthenticated) |
+</Step>
+
+</Steps>
+
+## Permissions and Access
+
+Antimetal uses a read-only connector restricted to query and exploration tools (`query`, `hits`, `facets`, field and stream listings, and `stats_query`). VictoriaLogs exposes no write or ingestion tools, and none are enabled.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />

@@ -1,0 +1,55 @@
+---
+title: "Honeycomb"
+description: "Create a Honeycomb Management API key for Antimetal"
+---
+
+## Overview
+
+This guide walks you through creating a Honeycomb Management API key to enable the Antimetal integration. Antimetal uses the key to query your datasets, traces, and triggers through Honeycomb's MCP server.
+
+<Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/honeycomb">
+  Go to the Honeycomb integration setup in the Antimetal dashboard.
+</Card>
+
+## Prerequisites
+
+- A Honeycomb team with [Honeycomb Intelligence](https://docs.honeycomb.io/security-compliance/honeycomb-intelligence/) enabled
+- Team owner permission, which is required to create a Management API key
+
+## Setup
+
+<Steps>
+
+<Step title="Open API key settings">
+  Log in to Honeycomb and go to **Account > Team Settings > API Keys**.
+</Step>
+
+<Step title="Create a Management API key">
+  Click **Create Management API Key** and name it `Antimetal`.
+</Step>
+
+<Step title="Grant read scopes">
+  Select the **Model Context Protocol** and **Environments** scopes, and grant **Read** on both. No write scopes are needed.
+</Step>
+
+<Step title="Copy the Key ID and Key Secret">
+  Copy both the **Key ID** and the **Key Secret**.
+
+  <Warning>The secret is shown only once. Save it securely.</Warning>
+</Step>
+
+<Step title="Share the key with Antimetal">
+  Provide the key in the Antimetal UI in `KEY_ID:KEY_SECRET` format.
+
+  <Tip>Antimetal selects the US (`mcp.honeycomb.io`) or EU (`mcp.eu1.honeycomb.io`) endpoint automatically based on your account.</Tip>
+</Step>
+
+</Steps>
+
+## Permissions and Access
+
+Antimetal uses a read-only Management API key scoped to Model Context Protocol and Environments. It is restricted to listing and reading datasets, running queries, and analyzing columns. No write operations are performed.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />

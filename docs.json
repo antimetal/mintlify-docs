@@ -43,8 +43,12 @@
                 "group": "Monitoring and Observability",
                 "pages": [
                   "integrations/datadog",
-                  "integrations/grafana-cloud",
-                  "integrations/sentry"
+                  "integrations/grafana",
+                  "integrations/honeycomb",
+                  "integrations/sentry",
+                  "integrations/victoria-logs",
+                  "integrations/victoria-metrics",
+                  "integrations/self-hosted-observability"
                 ]
               },
               {

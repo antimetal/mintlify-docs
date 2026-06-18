@@ -1,0 +1,60 @@
+---
+title: "Self-Hosted Observability"
+description: "Connect Antimetal to observability tools you host yourself, such as Grafana, Victoria Logs, Victoria Metrics, Prometheus, and Pyroscope"
+---
+
+## Overview
+
+Most observability vendors are SaaS, so Antimetal reaches them directly over their public API. Tools you host yourself are different: they usually live inside your own network or VPC and are not reachable from the public internet.
+
+For these, Antimetal runs a dedicated, read-only connector for your organization. You provide the instance URL and a read-only token, and the connector queries that instance on your behalf. This page covers what the connectors need and how to make a private instance reachable.
+
+It applies to:
+
+- [Grafana (self-hosted)](/integrations/grafana)
+- [Victoria Logs](/integrations/victoria-logs)
+- [Victoria Metrics](/integrations/victoria-metrics)
+- Prometheus and Pyroscope, when accessed as Grafana data sources
+
+<Note>
+If you use a managed version of any of these (for example Grafana Cloud), follow the [Grafana](/integrations/grafana) guide instead. Managed instances are reached over their public endpoint and need no reachability setup.
+</Note>
+
+## What the connector needs
+
+Every self-hosted connector requires two things:
+
+| Requirement | Detail |
+|-------------|--------|
+| **Instance URL** | The HTTPS endpoint of your instance, reachable from the Antimetal connector. |
+| **Read-only token** | A bearer token or service account scoped to read only. Antimetal performs no writes. |
+
+The connector only ever issues read queries. The specific tools it can call are restricted to a read-only allowlist per integration.
+
+## Making a private instance reachable
+
+If your instance is not exposed to the public internet, choose one of the following. You can start narrow and expand later.
+
+<AccordionGroup>
+
+<Accordion title="Option 1: Public endpoint with an IP allowlist">
+Expose the instance over HTTPS, require the read-only token on every request, and restrict inbound access to Antimetal's egress IP. Traffic is encrypted in transit and authenticated, and only Antimetal's address can reach the endpoint.
+
+<Info>
+Allowlist Antimetal's egress IP: `44.195.180.21/32`. This is a single static address, so it is safe to pin in your firewall rules.
+</Info>
+</Accordion>
+
+<Accordion title="Option 2: Private connectivity">
+To keep traffic off the public internet entirely, contact us at [support@antimetal.com](mailto:support@antimetal.com) to discuss private networking options such as a VPN or a private link between your network and the Antimetal connector.
+</Accordion>
+
+</AccordionGroup>
+
+## Permissions and Access
+
+The connector uses a read-only token and is restricted to a read-only tool allowlist. No write or ingestion operations are performed. See each tool's page for the exact scope.
+
+<Snippet file="security-note.mdx" />
+
+<Snippet file="need-help.mdx" />
