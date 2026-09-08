@@ -142,7 +142,7 @@ A billing account administrator must grant the following roles to your existing 
 
 <Steps>
 <Step title="Create the custom role">
-  Your organization administrator must open **IAM & Admin > Roles**, select the organization that owns the billing account, and create a custom role named **Antimetal Cost Viewer** with these permissions:
+  Using an account with permission to create organization-level custom roles, open **IAM & Admin > Roles** and select the organization that owns the billing account. Create a custom role named **Antimetal Cost Viewer** with these permissions:
 
   | Permission | What it enables |
   | --- | --- |
@@ -153,17 +153,15 @@ A billing account administrator must grant the following roles to your existing 
   Create the role at **organization scope**, not project scope. Project-defined custom roles cannot be assigned to billing accounts. [Google's custom-role instructions](https://docs.cloud.google.com/billing/docs/how-to/custom-roles)
 </Step>
 
-<Step title="Assign access on the billing account">
-  Open **Billing**, select the relevant billing account, and go to **Account management**. Add the existing service-account email as a principal and assign **Antimetal Cost Viewer**. If it is already listed, edit its access without removing existing roles.
-</Step>
+<Step title="Assign the roles">
+  Open **Billing**, select the relevant billing account, and go to **Account management**. Add the existing service-account email as a principal and assign the applicable roles below. If it is already listed, edit its access without removing existing roles.
 
-<Step title="Grant access to resource-based CUD recommendations">
-  CUD sharing determines whether a resource-based commitment's discount applies only to its purchasing project or can also apply to other projects on the same billing account.
+  | Role | What it enables | Where to grant it |
+  | --- | --- | --- |
+  | **Antimetal Cost Viewer** (created above) | Read supported commitment orders and customer-specific SKU prices. | Relevant billing account. |
+  | **Spend Based Commitment Recommender Viewer** (`roles/recommender.ucsViewer`, Beta) | Read spend-based CUD recommendations and supporting insights. | Relevant billing account. |
+  | **Billing Account Usage Commitment Recommender Viewer** (`roles/recommender.billingAccountCudViewer`, Beta) | Read resource-based CUD recommendations and supporting insights. | Billing account when commitment discounts are shared across projects. If discounts apply only to the purchasing project, use `roles/recommender.viewer` on that project instead, as described under Project access. |
 
-  - **Discounts shared across projects:** assign `roles/recommender.billingAccountCudViewer` (Beta) to the same service account on the billing account.
-  - **Discounts limited to the purchasing project:** grant `roles/recommender.viewer` on that project, as listed under Project access above.
-
-  Keep your existing discount-sharing arrangement. See [Google's sharing settings](https://docs.cloud.google.com/compute/docs/committed-use-discounts/share-resource-cuds-across-projects) and [permission requirements](https://docs.cloud.google.com/docs/cuds-recommender#permissions_required_to_view_and_modify_recommendations).
 </Step>
 </Steps>
 
