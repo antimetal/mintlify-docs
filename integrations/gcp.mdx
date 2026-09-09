@@ -138,7 +138,7 @@ Billing account access adds the commitment and pricing information that project 
 
 This supports commitment planning and estimated savings. It does not provide historical billed spend or a forecast of your total cloud bill.
 
-A billing account administrator must grant the following roles to your existing Antimetal service account.
+A billing account administrator must grant the following roles to your existing Antimetal service account on each billing account included in the assessment.
 
 <Steps>
 <Step title="Create the custom role">
@@ -154,7 +154,7 @@ A billing account administrator must grant the following roles to your existing 
 </Step>
 
 <Step title="Assign the roles">
-  Open **Billing**, select the relevant billing account, and go to **Account management**. Add the existing service-account email as a principal and assign the applicable roles below. If it is already listed, edit its access without removing existing roles.
+  For each billing account, open **Billing**, select the account, and go to **Account management**. Add the existing service-account email as a principal and assign the applicable roles below. If it is already listed, edit its access without removing existing roles.
 
   | Role | What it enables | Where to grant it |
   | --- | --- | --- |
@@ -181,7 +181,7 @@ In **APIs & Services > Library**, check that the following APIs are enabled. Ena
 
 </Accordion>
 
-Provide Antimetal with the project IDs and billing account ID for the integration.
+Provide Antimetal with the project IDs and billing account IDs accessible to this service account.
 
 ## Permissions and Access
 
