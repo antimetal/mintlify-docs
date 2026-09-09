@@ -134,7 +134,7 @@ Billing account access adds the commitment and pricing information that project 
 
 - **Existing API-visible supported spend-based and flexible commitment orders:** the amount purchased, commitment term, and expiry. This helps estimate future commitment costs and account for commitments you already own where coverage is available.
 - **Resource-based committed use discount (CUD) recommendations and insights:** Google's assessment of additional commitment opportunities across the billing account.
-- **Customer-specific prices:** your current rate for an identified supported usage-rate SKU, to support savings estimates using your pricing rather than public list prices.
+- **Customer-specific prices:** discover available SKUs and their current account-specific rates to estimate savings using your pricing rather than public list prices.
 
 This supports commitment planning and estimated savings. It does not provide historical billed spend or a forecast of your total cloud bill.
 
@@ -149,6 +149,8 @@ A billing account administrator must grant the following roles to your existing 
   | `consumerprocurement.orders.list` | List API-visible orders, including supported spend-based and flexible commitment orders. |
   | `consumerprocurement.orders.get` | Read commitment amounts, terms, and expiry details for a supported API-visible commitment order. |
   | `billing.billingAccountPrice.get` | Read the current account-specific price for an identified supported usage-rate SKU. |
+  | `billing.billingAccountSkus.list` | List account-visible SKUs and their metadata. |
+  | `billing.billingAccountPrices.list` | List current account-specific SKU prices in bulk. |
 
   Create the role at **organization scope**, not project scope. Project-defined custom roles cannot be assigned to billing accounts. [Google's custom-role instructions](https://docs.cloud.google.com/billing/docs/how-to/custom-roles)
 </Step>
@@ -158,7 +160,7 @@ A billing account administrator must grant the following roles to your existing 
 
   | Role | What it enables | Where to grant it |
   | --- | --- | --- |
-  | **Antimetal Cost Viewer** (created above) | Read supported commitment orders and customer-specific SKU prices. | Relevant billing account. |
+  | **Antimetal Cost Viewer** (created above) | Read supported commitment orders, discover SKUs, and retrieve customer-specific prices. | Relevant billing account. |
   | **Spend Based Commitment Recommender Viewer** (`roles/recommender.ucsViewer`, Beta) | Read spend-based CUD recommendations and supporting insights. | Relevant billing account. |
   | **Billing Account Usage Commitment Recommender Viewer** (`roles/recommender.billingAccountCudViewer`, Beta) | Read resource-based CUD recommendations and supporting insights. | Billing account when commitment discounts are shared across projects. If discounts apply only to the purchasing project, use `roles/recommender.viewer` on that project instead, as described under Project access. |
 
