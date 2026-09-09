@@ -116,17 +116,15 @@ To let Antimetal assess your GCP resources for cost-saving opportunities, add th
 
 ### Project access
 
-These roles provide read-only access. They do not permit changing or deleting infrastructure.
+This role provides read-only access. It does not permit changing or deleting infrastructure.
 
-Open **IAM & Admin > IAM** in each relevant project. Find the existing service-account email and click **Edit principal**, or select **Grant access** if it is not listed. Add the roles for that project's scope:
+Open **IAM & Admin > IAM** in each relevant project. Find the existing service-account email and click **Edit principal**, or select **Grant access** if it is not listed. Add the role below:
 
 | Role | Where to grant it | What it enables |
 | --- | --- | --- |
-| Compute Viewer (`roles/compute.viewer`) | Projects included in the cost assessment | Read Compute inventory, configuration, reservations, and existing resource-based commitments. |
 | Recommender Viewer (`roles/recommender.viewer`) | Projects included in the cost assessment | Read Google's optimization recommendations and supporting insights. |
-| Kubernetes Engine Cluster Viewer (`roles/container.clusterViewer`) | Only projects with GKE clusters you want assessed | Discover clusters and read cluster/node-pool configuration. Does not grant Kubernetes RBAC access to workloads or permission to modify clusters. |
 
-Resource-based commitments belong to the project that purchased them, even when their discounts are shared across the billing account. Grant Compute Viewer on that project too if it is not already included.
+Include projects that purchased resource-based commitments, even if they are outside the workload projects.
 
 ### Billing account access
 
@@ -175,8 +173,6 @@ A billing account administrator must grant the following roles to your existing 
 
 In **APIs & Services > Library**, check that the following APIs are enabled. Enable only those that are missing.
 
-- **Compute Engine API** (`compute.googleapis.com`) for resource configuration, reservations, and resource-based commitments
-- **Kubernetes Engine API** (`container.googleapis.com`) when GKE assessment is enabled
 - **Recommender API** (`recommender.googleapis.com`) for recommendations and insights
 - **Cloud Commerce Consumer Procurement API** (`cloudcommerceconsumerprocurement.googleapis.com`) for existing commitment orders
 - **Cloud Billing API** (`cloudbilling.googleapis.com`) for pricing
