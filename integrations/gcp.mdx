@@ -5,7 +5,7 @@ description: "Create a GCP service account for Antimetal monitoring"
 
 ## Overview
 
-This guide walks you through creating a GCP service account to enable the Antimetal integration for monitoring traces, logs, and metrics across your GCP projects.
+This guide explains how to connect GCP to Antimetal for traces, logs, and metrics, and add optional permissions for cost optimization.
 
 <Card title="Set up in Antimetal" icon="arrow-up-right-from-square" href="https://overlook.antimetal.com/integrations/gcp">
   Go to the GCP integration setup in the Antimetal dashboard.
@@ -108,9 +108,84 @@ The service account will have these read-only permissions across your specified 
 | Error Reporting Viewer | Read access to error groups and events |
 | Cloud Asset Viewer | Read access to cloud resource metadata and configurations |
 
+## Cost optimization permissions (Beta)
+
+These permissions help Antimetal identify unused or oversized infrastructure, assess existing commitments, and estimate potential savings using your resource usage and pricing.
+
+To let Antimetal assess your GCP resources for cost-saving opportunities, add the permissions below to the service account created above or already connected to Antimetal. Reuse its existing JSON key and keep its current permissions.
+
+### Project access
+
+These roles provide read-only access. They do not permit changing or deleting infrastructure.
+
+Open **IAM & Admin > IAM** in each relevant project. Find the existing service-account email and click **Edit principal**, or select **Grant access** if it is not listed. Add the roles for that project's scope:
+
+| Role | Where to grant it | What it enables |
+| --- | --- | --- |
+| Compute Viewer (`roles/compute.viewer`) | Projects included in the cost assessment | Read Compute inventory, configuration, reservations, and existing resource-based commitments. |
+| Recommender Viewer (`roles/recommender.viewer`) | Projects included in the cost assessment | Read Google's optimization recommendations and supporting insights. |
+| Kubernetes Engine Cluster Viewer (`roles/container.clusterViewer`) | Only projects with GKE clusters you want assessed | Discover clusters and read cluster/node-pool configuration. Does not grant Kubernetes RBAC access to workloads or permission to modify clusters. |
+
+Resource-based commitments belong to the project that purchased them, even when their discounts are shared across the billing account. Grant Compute Viewer on that project too if it is not already included.
+
+### Billing account access
+
+Billing account access adds the commitment and pricing information that project access alone cannot provide:
+
+- **Existing API-visible supported spend-based and flexible commitment orders:** the amount purchased, commitment term, and expiry. This helps estimate future commitment costs and account for commitments you already own where coverage is available.
+- **Resource-based committed use discount (CUD) recommendations and insights:** Google's assessment of additional commitment opportunities across the billing account.
+- **Customer-specific prices:** your current rate for an identified supported usage-rate SKU, to support savings estimates using your pricing rather than public list prices.
+
+This supports commitment planning and estimated savings. It does not provide historical billed spend or a forecast of your total cloud bill.
+
+A billing account administrator must grant the following roles to your existing Antimetal service account on each billing account included in the assessment.
+
+<Steps>
+<Step title="Create the custom role">
+  Using an account with permission to create organization-level custom roles, open **IAM & Admin > Roles** and select the organization that owns the billing account. Create a custom role named **Antimetal Cost Viewer** with these permissions:
+
+  | Permission | What it enables |
+  | --- | --- |
+  | `consumerprocurement.orders.list` | List API-visible orders, including supported spend-based and flexible commitment orders. |
+  | `consumerprocurement.orders.get` | Read commitment amounts, terms, and expiry details for a supported API-visible commitment order. |
+  | `billing.billingAccountPrice.get` | Read the current account-specific price for an identified supported usage-rate SKU. |
+
+  Create the role at **organization scope**, not project scope. Project-defined custom roles cannot be assigned to billing accounts. [Google's custom-role instructions](https://docs.cloud.google.com/billing/docs/how-to/custom-roles)
+</Step>
+
+<Step title="Assign the roles">
+  For each billing account, open **Billing**, select the account, and go to **Account management**. Add the existing service-account email as a principal and assign the applicable roles below. If it is already listed, edit its access without removing existing roles.
+
+  | Role | What it enables | Where to grant it |
+  | --- | --- | --- |
+  | **Antimetal Cost Viewer** (created above) | Read supported commitment orders and customer-specific SKU prices. | Relevant billing account. |
+  | **Spend Based Commitment Recommender Viewer** (`roles/recommender.ucsViewer`, Beta) | Read spend-based CUD recommendations and supporting insights. | Relevant billing account. |
+  | **Billing Account Usage Commitment Recommender Viewer** (`roles/recommender.billingAccountCudViewer`, Beta) | Read resource-based CUD recommendations and supporting insights. | Billing account when commitment discounts are shared across projects. If discounts apply only to the purchasing project, use `roles/recommender.viewer` on that project instead, as described under Project access. |
+
+</Step>
+</Steps>
+
+<Accordion title="What billing data is accessible">
+  Order access covers the billing account and can include other Marketplace purchases, not only CUDs. Account-price reads expose customer pricing through Google's Preview Pricing API.
+</Accordion>
+
+<Accordion title="Check API access">
+
+In **APIs & Services > Library**, check that the following APIs are enabled. Enable only those that are missing.
+
+- **Compute Engine API** (`compute.googleapis.com`) for resource configuration, reservations, and resource-based commitments
+- **Kubernetes Engine API** (`container.googleapis.com`) when GKE assessment is enabled
+- **Recommender API** (`recommender.googleapis.com`) for recommendations and insights
+- **Cloud Commerce Consumer Procurement API** (`cloudcommerceconsumerprocurement.googleapis.com`) for existing commitment orders
+- **Cloud Billing API** (`cloudbilling.googleapis.com`) for pricing
+
+</Accordion>
+
+Provide Antimetal with the project IDs and billing account IDs accessible to this service account.
+
 ## Permissions and Access
 
-Antimetal uses a read-only service account with Monitoring Viewer, Logs Viewer, Cloud Trace User, Error Reporting Viewer, and Cloud Asset Viewer roles. No write operations are performed.
+The cost optimization roles add read-only resource, commitment, and pricing access to the monitoring integration. Antimetal does not use these permissions to change infrastructure or purchase commitments.
 
 <Snippet file="security-note.mdx" />
 
